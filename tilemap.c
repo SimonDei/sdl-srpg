@@ -29,12 +29,12 @@ static Layer LoadLayer(
 
     char buffer[1024];
     fgets(buffer, 1024, pFile);
-    layer.usWidth = (unsigned short)strtol(buffer, NULL, 10);
+    layer.usWidth = (UINT16)strtol(buffer, NULL, 10);
 
     fgets(buffer, 1024, pFile);
-    layer.usHeight = (unsigned short)strtol(buffer, NULL, 10);
+    layer.usHeight = (UINT16)strtol(buffer, NULL, 10);
 
-    layer.arrTiles = malloc((size_t)(layer.usWidth * layer.usHeight) * sizeof(unsigned char));
+    layer.arrTiles = malloc((size_t)(layer.usWidth * layer.usHeight) * sizeof(BYTE));
     if (!layer.arrTiles) {
         SDL_Log("Failed to allocate memory for layer tiles\n");
         fclose(pFile);
@@ -47,7 +47,7 @@ static Layer LoadLayer(
         const char* pszTileId = strtok(buffer, ",");
         while (pszTileId != NULL) {
             if (nIndex < layer.usWidth * layer.usHeight) {
-                layer.arrTiles[nIndex] = (unsigned char)strtol(pszTileId, NULL, 10);
+                layer.arrTiles[nIndex] = (BYTE)strtol(pszTileId, NULL, 10);
                 nIndex++;
             }
             pszTileId = strtok(NULL, ",");

@@ -42,6 +42,15 @@ void SetSpriteScale(
     pSprite->fScaleY = fScaleY;
 }
 
+void SetSpritePosition(
+    _Inout_ Sprite* pSprite,
+    _In_    FLOAT x,
+    _In_    FLOAT y
+) {
+    pSprite->x = x;
+    pSprite->y = y;
+}
+
 void DrawSprite(
     _In_ const Sprite* pSprite
 ) {

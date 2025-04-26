@@ -26,6 +26,6 @@ add_executable(untitled main.c
         tilemap.c
         tilemap.h
         layer.c
-        layer.h "utils.h" "character.h" "character.c" "unit.h" "unit.c" "animated-sprite.h" "animated-sprite.c" "keycodes.h" "point.h")
+        layer.h "utils.h" "character.h" "character.c" "unit.h" "unit.c" "animated-sprite.h" "animated-sprite.c" "keycodes.h" "point.h" "toml.h" "toml.c")
 
 target_link_libraries(untitled PRIVATE SDL3 SDL3_image)

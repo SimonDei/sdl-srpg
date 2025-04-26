@@ -6,8 +6,6 @@
 #include "animated-sprite.h"
 #include "keycodes.h"
 
-#include <stdio.h>
-
 int main(void) {
     Window* window = CreateWindow(500, 200, 1024, 768, "Allegro window");
     assert(window);
