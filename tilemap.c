@@ -137,8 +137,8 @@ Point MapPositionToTile(
     _In_ const FLOAT y
 ) {
     return (Point) {
-        (int)(floorf(x / GetCameraZoom()) / pTilemap->fTileWidth),
-        (int)(floorf(y / GetCameraZoom()) / pTilemap->fTileHeight)
+        (int)floorf(x / pTilemap->fTileWidth),
+        (int)floorf(y / pTilemap->fTileHeight)
     };
 }
 

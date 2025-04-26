@@ -71,6 +71,17 @@ Vector2 WorldToScreenV(
     );
 
 _Check_return_
+Vector2 ScreenToWorld(
+    _In_ FLOAT x,
+    _In_ FLOAT y
+    );
+
+_Check_return_
+Vector2 ScreenToWorldV(
+    _In_ Vector2 screen
+);
+
+_Check_return_
 FLOAT GetCameraZoom(
     void
     );

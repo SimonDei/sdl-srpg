@@ -52,7 +52,7 @@ void DrawSprite(
         pSprite->pTexture->fHeight
     };
 
-    Vector2 screenPos = WorldToScreen(pSprite->x, pSprite->y);
+    const Vector2 screenPos = WorldToScreen(pSprite->x, pSprite->y);
 
     const SDL_FRect dstRect = {
         screenPos.x,

@@ -14,17 +14,17 @@ static Camera* s_pCurrentCamera;
 static void RecalculateViewMatrix(
     _Inout_ Camera* pCamera
 ) {
-    float cos_r = cosf(pCamera->fRotation);
-    float sin_r = sinf(pCamera->fRotation);
+    const float cos_r = cosf(pCamera->fRotation);
+    const float sin_r = sinf(pCamera->fRotation);
 
-    float sx = pCamera->fZoom;
-    float sy = pCamera->fZoom;
+    const float sx = pCamera->fZoom;
+    const float sy = pCamera->fZoom;
 
-    float tx = -pCamera->x;
-    float ty = -pCamera->y;
+    const float tx = -pCamera->x;
+    const float ty = -pCamera->y;
 
-    float cx = (float)GetWindowWidth() / 2.0f;
-    float cy = (float)GetWindowHeight() / 2.0f;
+    const float cx = (float)GetWindowWidth() / 2.0f;
+    const float cy = (float)GetWindowHeight() / 2.0f;
 
     pCamera->pfViewMatrix[0][0] = cos_r * sx;
     pCamera->pfViewMatrix[0][1] = -sin_r * sy;
@@ -142,6 +142,45 @@ Vector2 WorldToScreenV(
     screen.y = world.x * s_pCurrentCamera->pfViewMatrix[0][1] + world.y * s_pCurrentCamera->pfViewMatrix[1][1] + s_pCurrentCamera->pfViewMatrix[2][1];
 
     return screen;
+}
+
+_Check_return_
+Vector2 ScreenToWorld(
+    _In_ FLOAT x,
+    _In_ FLOAT y
+) {
+    Vector2 world = { 0 };
+
+    x -= s_pCurrentCamera->pfViewMatrix[2][0];
+    y -= s_pCurrentCamera->pfViewMatrix[2][1];
+
+    const float cos_r = cosf(-s_pCurrentCamera->fRotation);
+    const float sin_r = sinf(-s_pCurrentCamera->fRotation);
+    const float invZoom = 1.0f / s_pCurrentCamera->fZoom;
+
+    world.x = (x * cos_r - y * sin_r) * invZoom;
+    world.y = (x * sin_r + y * cos_r) * invZoom;
+
+    return world;
+}
+
+_Check_return_
+Vector2 ScreenToWorldV(
+    _In_ Vector2 screen
+) {
+    Vector2 world = { 0 };
+
+    screen.x -= s_pCurrentCamera->pfViewMatrix[2][0];
+    screen.y -= s_pCurrentCamera->pfViewMatrix[2][1];
+
+    const float cos_r = cosf(-s_pCurrentCamera->fRotation);
+    const float sin_r = sinf(-s_pCurrentCamera->fRotation);
+    const float invZoom = 1.0f / s_pCurrentCamera->fZoom;
+
+    world.x = (screen.x * cos_r - screen.y * sin_r) * invZoom;
+    world.y = (screen.x * sin_r + screen.y * cos_r) * invZoom;
+
+    return world;
 }
 
 _Check_return_
