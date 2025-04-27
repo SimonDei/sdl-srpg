@@ -5,6 +5,7 @@
 #include "tilemap.h"
 #include "animated-sprite.h"
 #include "keycodes.h"
+#include "unit.h"
 
 int main(void) {
     Window* window = CreateWindow(500, 200, 1024, 768, "Allegro window");
@@ -27,6 +28,9 @@ int main(void) {
     assert(character);
     AddAnimatedSpriteAnimation(character, "forward", 0, 4, 300);
     SetActiveAnimatedSpriteAnimation(character, "forward");
+
+    Unit* player = CreateUnitFromSprite(&character, 1, 1);
+    assert(player);
 
     Camera camera = CreateCamera(0, 0, 400, 400, 0, 4);
     UseCamera(&camera);
@@ -51,14 +55,14 @@ int main(void) {
         ClearWindow(0, 0, 0);
 
         DrawTilemap(level1Tilemap);
-        DrawAnimatedSprite(character);
+        DrawUnit(player, level1Tilemap);
 
         DisplayWindow();
 
         UpdateAnimatedSprite(character);
     }
 
-    DestroyAnimatedSprite(character);
+    DestroyUnit(player);
     DestroyTilemapManager(tilemapManager);
     DestroyTextureManager(textureManager);
     DestroyWindow(window);

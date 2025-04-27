@@ -16,9 +16,17 @@ typedef struct _Unit {
     INT moveSpeed;
 } Unit;
 
-_Check_return_
-Unit* CreateUnit(
-    _In_ AnimatedSprite* pAnimSprite,
+/**
+ * Creates a unit from an animated sprite.
+ * 
+ * @param ppAnimSprite Pointer to the animated sprite to use for the unit.
+ * @param iTileX The x-coordinate of the tile position.
+ * @param iTileY The y-coordinate of the tile position.
+ * 
+ * @return A pointer to the created unit, or NULL on failure.
+ */
+_Check_return_ _Ret_maybenull_ Unit* CreateUnitFromSprite(
+    _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
     _In_ INT iTileX,
     _In_ INT iTileY
 );

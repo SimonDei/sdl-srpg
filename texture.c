@@ -21,6 +21,7 @@ Texture* CreateTexture(
         return NULL;
     }
 
+    pTexture->color = (Color){ 255, 255, 255, 255 };
     pTexture->pszFilename = pszFilename;
     pTexture->pBitmap = IMG_LoadTexture(GetWindowRenderer(), pszFilename);
     if (!pTexture->pBitmap) {
@@ -33,6 +34,15 @@ Texture* CreateTexture(
     SDL_GetTextureSize(pTexture->pBitmap, &pTexture->fWidth, &pTexture->fHeight);
 
     return pTexture;
+}
+
+void SetTextureColor(
+    _Inout_ Texture* pTexture,
+    _In_    const Color color
+) {
+    pTexture->color = color;
+    SDL_SetTextureColorMod(pTexture->pBitmap, color.r, color.g, color.b);
+    SDL_SetTextureAlphaMod(pTexture->pBitmap, color.a);
 }
 
 _Check_return_opt_

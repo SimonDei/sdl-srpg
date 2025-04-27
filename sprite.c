@@ -29,6 +29,7 @@ Sprite* CreateSprite(
     pSprite->y = y;
     pSprite->fScaleX = 1.0f;
     pSprite->fScaleY = 1.0f;
+    pSprite->color = (Color){ 255, 255, 255, 255 };
 
     return pSprite;
 }
@@ -42,13 +43,34 @@ void SetSpriteScale(
     pSprite->fScaleY = fScaleY;
 }
 
+void SetSpriteX(
+    _Inout_ Sprite* pSprite,
+    _In_    const FLOAT x
+) {
+    pSprite->x = x;
+}
+
+void SetSpriteY(
+    _Inout_ Sprite* pSprite,
+    _In_    const FLOAT y
+) {
+    pSprite->y = y;
+}
+
 void SetSpritePosition(
     _Inout_ Sprite* pSprite,
-    _In_    FLOAT x,
-    _In_    FLOAT y
+    _In_    const FLOAT x,
+    _In_    const FLOAT y
 ) {
     pSprite->x = x;
     pSprite->y = y;
+}
+
+void SetSpriteTexture(
+    _Inout_ Sprite* pSprite,
+    _In_    const Texture* pTexture
+) {
+    pSprite->pTexture = pTexture;
 }
 
 void DrawSprite(

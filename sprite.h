@@ -31,10 +31,25 @@ void SetSpriteScale(
     _In_    FLOAT fScaleY
     );
 
+void SetSpriteX(
+    _Inout_ Sprite* pSprite,
+    _In_    FLOAT x
+    );
+
+void SetSpriteY(
+    _Inout_ Sprite* pSprite,
+    _In_    FLOAT y
+    );
+
 void SetSpritePosition(
     _Inout_ Sprite* pSprite,
     _In_    FLOAT x,
     _In_    FLOAT y
+    );
+
+void SetSpriteTexture(
+    _Inout_ Sprite* pSprite,
+    _In_    const Texture* pTexture
     );
 
 void DrawSprite(

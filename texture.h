@@ -6,6 +6,7 @@
 #define TEXTURE_H
 
 #include "utils.h"
+#include "color.h"
 
 typedef struct SDL_Texture SDL_Texture;
 
@@ -14,11 +15,17 @@ typedef struct _Texture {
     FLOAT fWidth;
     FLOAT fHeight;
     PCSTR pszFilename;
+    Color color
 } Texture;
 
 _Ret_maybenull_
 Texture* CreateTexture(
     _In_z_ PCSTR pszFilename
+    );
+
+void SetTextureColor(
+    _Inout_ Texture* pTexture,
+    _In_    Color color
     );
 
 _Check_return_opt_

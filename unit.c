@@ -8,22 +8,23 @@
 #include "sprite.h"
 #include "animated-sprite.h"
 
-_Check_return_
-Unit* CreateUnit(
-    _In_ AnimatedSprite* pAnimSprite,
+_Check_return_ _Ret_maybenull_
+Unit* CreateUnitFromSprite(
+    _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
     _In_ const INT iTileX,
     _In_ const INT iTileY
 ) {
-    Unit* pUnit = malloc(sizeof(Unit));
+    Unit* pUnit = calloc(1, sizeof(Unit));
     if (!pUnit) {
         SDL_Log("Failed to allocate memory for Unit\n");
         return NULL;
     }
 
-    memset(pUnit, 0, sizeof(Unit));
-    pUnit->pAnimSprite = pAnimSprite;
+    pUnit->pAnimSprite = *ppAnimSprite;
     pUnit->ptTilePosition.x = iTileX;
     pUnit->ptTilePosition.y = iTileY;
+
+    *ppAnimSprite = NULL;
 
     return pUnit;
 }
@@ -64,7 +65,7 @@ Unit* GetUnitAtScreenPosition(
 
     const Point tilePos = MapPositionToTile(pTilemap, world.x, world.y);
 
-    for (INT i = 0; i < nCount; ++i) {
+    for (INT i = 0; i < nCount; i++) {
         if (pUnits[i].ptTilePosition.x == tilePos.x && pUnits[i].ptTilePosition.y == tilePos.y) {
             return &pUnits[i];
         }
