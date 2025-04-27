@@ -88,7 +88,7 @@ void LoadTilemapLayer(
 
 void SetTilemapTexture(
     _Inout_ Tilemap* pTilemap,
-    _In_    Texture* pTexture
+    _In_    const Texture* pTexture
 ) {
     pTilemap->pTilesetTexture = pTexture;
 }

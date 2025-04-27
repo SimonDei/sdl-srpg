@@ -29,9 +29,16 @@ Sprite* CreateSprite(
     pSprite->y = y;
     pSprite->fScaleX = 1.0f;
     pSprite->fScaleY = 1.0f;
-    pSprite->color = (Color){ 255, 255, 255, 255 };
+    pSprite->bVisible = true;
 
     return pSprite;
+}
+
+void SetSpriteVisible(
+    _Inout_ Sprite* pSprite,
+    _In_    const bool bVisible
+) {
+    pSprite->bVisible = bVisible;
 }
 
 void SetSpriteScale(
@@ -76,6 +83,10 @@ void SetSpriteTexture(
 void DrawSprite(
     _In_ const Sprite* pSprite
 ) {
+    if (!pSprite->bVisible) {
+        return;
+    }
+
     const SDL_FRect srcRect = {
         0,
         0,
@@ -105,6 +116,20 @@ Vector2 GetSpritePositionV(
     _In_ const Sprite* pSprite
 ) {
     return (Vector2){ pSprite->x, pSprite->y };
+}
+
+_Check_return_
+FLOAT GetSpriteWidth(
+    _In_ const Sprite* pSprite
+) {
+    return pSprite->pTexture->fWidth;
+}
+
+_Check_return_
+FLOAT GetSpriteHeight(
+    _In_ const Sprite* pSprite
+) {
+    return pSprite->pTexture->fHeight;
 }
 
 _Check_return_opt_

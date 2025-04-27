@@ -16,6 +16,7 @@ typedef struct _Sprite {
     FLOAT y;
     FLOAT fScaleX;
     FLOAT fScaleY;
+    bool bVisible;
 } Sprite;
 
 _Ret_maybenull_
@@ -23,6 +24,11 @@ Sprite* CreateSprite(
     _In_ Texture* pTexture,
     _In_ FLOAT x,
     _In_ FLOAT y
+    );
+
+void SetSpriteVisible(
+    _Inout_ Sprite* pSprite,
+    _In_    bool bVisible
     );
 
 void SetSpriteScale(
@@ -58,6 +64,16 @@ void DrawSprite(
 
 _Check_return_
 Vector2 GetSpritePositionV(
+    _In_ const Sprite* pSprite
+    );
+
+_Check_return_
+FLOAT GetSpriteWidth(
+    _In_ const Sprite* pSprite
+    );
+
+_Check_return_
+FLOAT GetSpriteHeight(
     _In_ const Sprite* pSprite
     );
 
