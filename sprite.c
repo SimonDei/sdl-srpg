@@ -132,6 +132,13 @@ FLOAT GetSpriteHeight(
     return pSprite->pTexture->fHeight;
 }
 
+_Check_return_
+bool GetSpriteVisible(
+    _In_ const Sprite* pSprite
+) {
+    return pSprite->bVisible;
+}
+
 _Check_return_opt_
 bool DestroySprite(
     _Inout_ _Pre_valid_ _Post_invalid_ Sprite* pSprite

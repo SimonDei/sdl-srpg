@@ -29,7 +29,7 @@ int main(void) {
     AddAnimatedSpriteAnimation(character, "forward", 0, 4, 300);
     SetActiveAnimatedSpriteAnimation(character, "forward");
 
-    Unit* player = CreateUnitFromSprite(&character, 1, 1);
+    Unit* player = CreateUnitFromAnimatedSprite(&character, 1, 1);
     assert(player);
 
     Camera camera = CreateCamera(0, 0, 400, 400, 0, 4);
@@ -58,8 +58,6 @@ int main(void) {
         DrawUnit(player, level1Tilemap);
 
         DisplayWindow();
-
-        UpdateAnimatedSprite(character);
     }
 
     DestroyUnit(player);

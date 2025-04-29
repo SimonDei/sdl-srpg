@@ -7,7 +7,7 @@
 #include <math.h>
 
 _Check_return_
-Vector2 CreateVector2(
+inline Vector2 CreateVector2(
     _In_ const FLOAT x,
     _In_ const FLOAT y
 ) {
@@ -15,14 +15,14 @@ Vector2 CreateVector2(
 }
 
 _Check_return_
-Vector2 Vector2Zero(
+inline Vector2 Vector2Zero(
     void
 ) {
     return (Vector2){ 0.0f, 0.0f };
 }
 
 _Check_return_
-Vector2 Vector2One(
+inline Vector2 Vector2One(
     void
 ) {
     return (Vector2){ 1.0f, 1.0f };
@@ -55,11 +55,13 @@ void Vector2Scale(
 void Vector2Normalize(
     _Inout_ Vector2* pVector
 ) {
-    pVector->x /= pVector->x;
-    pVector->y /= pVector->y;
-    if (pVector->x == 0.0f && pVector->y == 0.0f) {
-        pVector->x = 1.0f;
-        pVector->y = 1.0f;
+    const float length = sqrtf(pVector->x * pVector->x + pVector->y * pVector->y);
+    if (length != 0.0f) {
+        pVector->x /= length;
+        pVector->y /= length;
+    } else {
+        pVector->x = 0.0f;
+        pVector->y = 0.0f;
     }
 }
 
@@ -70,7 +72,7 @@ FLOAT Vector2Length(
     return sqrtf(vector.x * vector.x + vector.y * vector.y);
 }
 
-_Check_return_opt_
+_Check_return_
 bool Vector2Equal(
     _In_ const Vector2 vec1,
     _In_ const Vector2 vec2

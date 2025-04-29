@@ -1,4 +1,5 @@
 cmake_minimum_required(VERSION 3.20)
+
 project(untitled C)
 
 set(CMAKE_C_STANDARD 17)
@@ -26,6 +27,6 @@ add_executable(untitled main.c
         tilemap.c
         tilemap.h
         layer.c
-        layer.h "utils.h" "character.h" "character.c" "unit.h" "unit.c" "animated-sprite.h" "animated-sprite.c" "keycodes.h" "point.h" "toml.h" "toml.c" "color.h")
+        layer.h "utils.h" "character.h" "character.c" "unit.h" "unit.c" "animated-sprite.h" "animated-sprite.c" "keycodes.h" "point.h"   "color.h")
 
 target_link_libraries(untitled PRIVATE SDL3 SDL3_image)

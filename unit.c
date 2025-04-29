@@ -9,7 +9,7 @@
 #include "animated-sprite.h"
 
 _Check_return_ _Ret_maybenull_
-Unit* CreateUnitFromSprite(
+Unit* CreateUnitFromAnimatedSprite(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
     _In_ const INT iTileX,
     _In_ const INT iTileY
@@ -23,6 +23,7 @@ Unit* CreateUnitFromSprite(
     pUnit->pAnimSprite = *ppAnimSprite;
     pUnit->ptTilePosition.x = iTileX;
     pUnit->ptTilePosition.y = iTileY;
+    pUnit->bAnimated = true;
 
     *ppAnimSprite = NULL;
 
@@ -36,7 +37,12 @@ void DrawUnit(
     const FLOAT x = pUnit->ptTilePosition.x * pTilemap->fTileWidth;
     const FLOAT y = pUnit->ptTilePosition.y * pTilemap->fTileHeight;
     SetSpritePosition(pUnit->pAnimSprite->pSprite, x, y);
+    
     DrawAnimatedSprite(pUnit->pAnimSprite);
+
+    if (pUnit->bAnimated) {
+        UpdateAnimatedSprite(pUnit->pAnimSprite);
+    }
 }
 
 void MoveUnit(

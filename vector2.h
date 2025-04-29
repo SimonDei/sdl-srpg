@@ -30,8 +30,7 @@ typedef struct _Vector2 {
  *
  * @returns A Vector2 initialized with the specified coordinates.
  */
-_Check_return_
-Vector2 CreateVector2(
+_Check_return_ inline Vector2 CreateVector2(
     _In_ FLOAT x,
     _In_ FLOAT y
     );
@@ -41,8 +40,7 @@ Vector2 CreateVector2(
  *
  * @returns A zero-initialized Vector2 representing the origin (0, 0).
  */
-_Check_return_
-Vector2 Vector2Zero(
+_Check_return_ inline Vector2 Vector2Zero(
     void
     );
 
@@ -51,8 +49,7 @@ Vector2 Vector2Zero(
  *
  * @returns A Vector2 with values (1.0f, 1.0f), often used for uniform scaling or default values.
  */
-_Check_return_
-Vector2 Vector2One(
+_Check_return_ inline Vector2 Vector2One(
     void
     );
 
@@ -105,8 +102,7 @@ void Vector2Normalize(
  *
  * @returns The length of the vector as a floating-point value.
  */
-_Check_return_
-FLOAT Vector2Length(
+_Check_return_ FLOAT Vector2Length(
     _In_ Vector2 vector
     );
 
@@ -118,8 +114,7 @@ FLOAT Vector2Length(
  *
  * @returns true if both vectors have equal X and Y components; otherwise, false.
  */
-_Check_return_opt_
-bool Vector2Equal(
+_Check_return_ bool Vector2Equal(
     _In_ Vector2 vec1,
     _In_ Vector2 vec2
     );

@@ -18,8 +18,21 @@ typedef struct _Camera {
     FLOAT pfViewMatrix[3][3];
 } Camera;
 
-_Check_return_
-Camera CreateCamera(
+/**
+ * @brief Creates a camera with the specified properties.
+ *
+ * This function initializes a `Camera` struct with the specified position, size, rotation, and zoom level.
+ * The camera can be used for viewing and rendering parts of the scene with specific transformations.
+ *
+ * @param x        X coordinate for the camera's position.
+ * @param y        Y coordinate for the camera's position.
+ * @param fWidth   Width of the camera's viewing area.
+ * @param fHeight  Height of the camera's viewing area.
+ * @param fRotation Rotation angle (in radians) for the camera.
+ * @param fZoom    Zoom factor for the camera (1.0 for no zoom, greater than 1.0 for zoom-in, less than 1.0 for zoom-out).
+ * @return A `Camera` struct initialized with the provided properties.
+ */
+_Check_return_ Camera CreateCamera(
     _In_ FLOAT x,
     _In_ FLOAT y,
     _In_ FLOAT fWidth,
@@ -28,76 +41,201 @@ Camera CreateCamera(
     _In_ FLOAT fZoom
     );
 
+/**
+ * @brief Sets the zoom level of the camera.
+ *
+ * This function updates the zoom factor for the specified camera. A zoom factor of 1.0 represents
+ * no zoom, values greater than 1.0 zoom in, and values less than 1.0 zoom out.
+ *
+ * @param pCamera Pointer to the `Camera` whose zoom level will be updated.
+ * @param fZoom   New zoom level for the camera. A value of 1.0 means no zoom, with higher values
+ *                indicating zooming in, and lower values indicating zooming out.
+ */
 void SetCameraZoom(
     _Inout_ Camera* pCamera,
     _In_    FLOAT fZoom
     );
 
+/**
+ * @brief Sets the rotation of the camera.
+ *
+ * This function updates the rotation angle for the specified camera. The rotation is applied in radians,
+ * where a value of 0.0 represents no rotation. Positive values rotate the camera counterclockwise,
+ * while negative values rotate it clockwise.
+ *
+ * @param pCamera Pointer to the `Camera` whose rotation will be updated.
+ * @param fRotation New rotation angle for the camera in radians. A value of 0.0 means no rotation.
+ */
 void SetCameraRotation(
     _Inout_ Camera* pCamera,
     _In_    FLOAT fRotation
     );
 
+/**
+ * @brief Sets the position of the camera.
+ *
+ * This function updates the position of the specified camera. The camera's position is defined by
+ * the X and Y coordinates, determining where the camera is placed in the scene.
+ *
+ * @param pCamera Pointer to the `Camera` whose position will be updated.
+ * @param x       New X coordinate for the camera's position.
+ * @param y       New Y coordinate for the camera's position.
+ */
 void SetCameraPosition(
     _Inout_ Camera* pCamera,
     _In_    FLOAT x,
     _In_    FLOAT y
     );
 
+/**
+ * @brief Sets the position of the camera using a `Vector2` object.
+ *
+ * This function updates the position of the specified camera using a `Vector2` struct, which contains
+ * the X and Y coordinates that define the camera's position in the scene.
+ *
+ * @param pCamera Pointer to the `Camera` whose position will be updated.
+ * @param target  A `Vector2` struct containing the new X and Y coordinates for the camera's position.
+ */
 void SetCameraPositionV(
     _Inout_ Camera* pCamera,
     _In_    Vector2 target
     );
 
+/**
+ * @brief Moves the camera's position by a specified offset.
+ *
+ * This function updates the position of the specified camera by adding the given offsets to its
+ * current position. The offsets are applied to the camera's X and Y coordinates, effectively moving
+ * the camera by the specified amount in both directions.
+ *
+ * @param pCamera Pointer to the `Camera` whose position will be updated.
+ * @param dx The amount to move the camera along the X-axis.
+ * @param dy The amount to move the camera along the Y-axis.
+ */
 void MoveCameraPosition(
     _Inout_ Camera* pCamera,
     _In_    FLOAT dx,
     _In_    FLOAT dy
     );
 
+/**
+ * @brief Activates the specified camera for rendering.
+ *
+ * This function applies the transformations (position, rotation, zoom, etc.) of the specified camera
+ * to the rendering context. Once this function is called, subsequent rendering operations will be affected
+ * by the camera's properties, such as its position and zoom level.
+ *
+ * @param pCamera Pointer to the `Camera` to be used for rendering.
+ */
 void UseCamera(
     _In_ Camera* pCamera
     );
 
-_Check_return_
-Vector2 WorldToScreen(
+/**
+ * @brief Converts world coordinates to screen coordinates.
+ *
+ * This function takes world coordinates (X, Y) and converts them to screen coordinates,
+ * taking into account the current camera's position, rotation, and zoom.
+ * This is useful for translating world space positions to screen space for rendering.
+ *
+ * @param x The X coordinate in world space.
+ * @param y The Y coordinate in world space.
+ * @return A `Vector2` struct containing the corresponding X and Y coordinates in screen space.
+ */
+_Check_return_ Vector2 WorldToScreen(
     _In_ FLOAT x,
     _In_ FLOAT y
     );
 
-_Check_return_
-Vector2 WorldToScreenV(
+/**
+ * @brief Converts world coordinates to screen coordinates using a `Vector2` struct.
+ *
+ * This function takes a `Vector2` representing world coordinates (X, Y) and converts it to screen coordinates,
+ * considering the current camera's position, rotation, and zoom. This is useful for translating world space positions
+ * to screen space for rendering.
+ *
+ * @param world A `Vector2` struct representing the X and Y coordinates in world space.
+ * @return A `Vector2` struct containing the corresponding X and Y coordinates in screen space.
+ */
+_Check_return_ Vector2 WorldToScreenV(
     _In_ Vector2 world
     );
 
-_Check_return_
-Vector2 ScreenToWorld(
+/**
+ * @brief Converts screen coordinates to world coordinates.
+ *
+ * This function takes screen coordinates (X, Y) and converts them to world coordinates,
+ * taking into account the current camera's position, rotation, and zoom.
+ * This is useful for translating screen space positions (e.g., mouse click locations) to world space.
+ *
+ * @param x The X coordinate in screen space.
+ * @param y The Y coordinate in screen space.
+ * @return A `Vector2` struct containing the corresponding X and Y coordinates in world space.
+ */
+_Check_return_ Vector2 ScreenToWorld(
     _In_ FLOAT x,
     _In_ FLOAT y
     );
 
-_Check_return_
-Vector2 ScreenToWorldV(
+/**
+ * @brief Converts screen coordinates to world coordinates using a `Vector2` struct.
+ *
+ * This function takes a `Vector2` representing screen coordinates (X, Y) and converts it to world coordinates,
+ * considering the current camera's position, rotation, and zoom. This is useful for translating screen space positions
+ * (e.g., mouse click locations) to world space.
+ *
+ * @param screen A `Vector2` struct representing the X and Y coordinates in screen space.
+ * @return A `Vector2` struct containing the corresponding X and Y coordinates in world space.
+ */
+_Check_return_ Vector2 ScreenToWorldV(
     _In_ Vector2 screen
-);
+    );
 
-_Check_return_
-FLOAT GetCameraZoom(
+/**
+ * @brief Gets the current zoom level of the camera.
+ *
+ * This function retrieves the current zoom factor of the active camera. A zoom factor of 1.0 represents
+ * no zoom, values greater than 1.0 indicate zooming in, and values less than 1.0 indicate zooming out.
+ *
+ * @return The current zoom level of the camera.
+ */
+_Check_return_ FLOAT GetCameraZoom(
     void
     );
 
-_Check_return_
-FLOAT GetCameraX(
+/**
+ * @brief Gets the current X position of the camera.
+ *
+ * This function retrieves the current X coordinate of the camera's position in the world space.
+ * It reflects the camera's horizontal position, which can be adjusted by panning or moving the camera.
+ *
+ * @return The current X position of the camera.
+ */
+_Check_return_ FLOAT GetCameraX(
     void
     );
 
-_Check_return_
-FLOAT GetCameraY(
+/**
+ * @brief Gets the current Y position of the camera.
+ *
+ * This function retrieves the current Y coordinate of the camera's position in the world space.
+ * It reflects the camera's vertical position, which can be adjusted by panning or moving the camera.
+ *
+ * @return The current Y position of the camera.
+ */
+_Check_return_ FLOAT GetCameraY(
     void
     );
 
-_Check_return_
-const Camera* GetCurrentCamera(
+/**
+ * @brief Retrieves the currently active camera.
+ *
+ * This function returns a pointer to the camera that is currently being used for rendering or transformations.
+ * The returned camera can be used to retrieve its properties such as position, rotation, zoom, etc.
+ *
+ * @return A pointer to the currently active `Camera`, or `NULL` if no camera is currently active.
+ */
+_Check_return_ const Camera* GetCurrentCamera(
     void
     );
 

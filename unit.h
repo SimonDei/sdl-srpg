@@ -14,10 +14,12 @@ typedef struct _Unit {
     INT attack;
     INT defense;
     INT moveSpeed;
+    bool bAnimated;
 } Unit;
 
 /**
  * Creates a unit from an animated sprite.
+ * Takes ownership of the animated sprite pointer.
  * 
  * @param ppAnimSprite Pointer to the animated sprite to use for the unit.
  * @param iTileX The x-coordinate of the tile position.
@@ -25,35 +27,77 @@ typedef struct _Unit {
  * 
  * @return A pointer to the created unit, or NULL on failure.
  */
-_Check_return_ _Ret_maybenull_ Unit* CreateUnitFromSprite(
+_Check_return_ _Ret_maybenull_ Unit* CreateUnitFromAnimatedSprite(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
     _In_ INT iTileX,
     _In_ INT iTileY
-);
+    );
 
+/**
+ * @brief Draws a unit on the screen based on its position on the tilemap.
+ *
+ * This function renders the specified unit at its position on the screen, using information from the
+ * provided tilemap to correctly place the unit within the game world. The unit will be drawn with
+ * its current properties, such as sprite, position, and other visual characteristics.
+ *
+ * @param pUnit    Pointer to the `Unit` that will be drawn.
+ * @param pTilemap Pointer to the `Tilemap` used to determine the unit's placement in the game world.
+ */
 void DrawUnit(
     _In_ const Unit* pUnit,
     _In_ const Tilemap* pTilemap
-);
+    );
 
+/**
+ * @brief Moves the unit by a specified offset.
+ *
+ * This function updates the position of the specified unit by adding the given offsets to its
+ * current position. The offsets are applied to the unit's X and Y coordinates, effectively moving
+ * the unit by the specified amount in both directions.
+ *
+ * @param pUnit Pointer to the `Unit` whose position will be updated.
+ * @param dx    The amount to move the unit along the X-axis.
+ * @param dy    The amount to move the unit along the Y-axis.
+ */
 void MoveUnit(
     _Inout_ Unit* pUnit,
     _In_    INT dx,
     _In_    INT dy
-);
+    );
 
-_Check_return_
-Unit* GetUnitAtScreenPosition(
+/**
+ * @brief Retrieves the unit at the specified screen position.
+ *
+ * This function checks the screen position (given by `fMouseX` and `fMouseY`) and determines which
+ * unit is located at that position, based on the provided list of units and the tilemap. The function
+ * returns a pointer to the unit found at the given screen coordinates.
+ *
+ * @param pUnits   Pointer to an array of `Unit` objects.
+ * @param nCount   The number of units in the `pUnits` array.
+ * @param pTilemap Pointer to the `Tilemap` used to map screen coordinates to world coordinates.
+ * @param fMouseX  The X coordinate of the mouse in screen space.
+ * @param fMouseY  The Y coordinate of the mouse in screen space.
+ * @return A pointer to the `Unit` at the specified screen position, or `NULL` if no unit is found.
+ */
+_Check_return_ Unit* GetUnitAtScreenPosition(
     _In_reads_(nCount) Unit* pUnits,
     _In_               INT nCount,
     _In_               const Tilemap* pTilemap,
     _In_               FLOAT fMouseX,
     _In_               FLOAT fMouseY
-);
+    );
 
-_Check_return_opt_
-bool DestroyUnit(
+/**
+ * @brief Destroys the specified unit, releasing its resources.
+ *
+ * This function deletes the specified unit and frees any associated resources. After this function is
+ * called, the `Unit` pointer is no longer valid, and further access to it should be avoided.
+ *
+ * @param pUnit Pointer to the `Unit` that will be destroyed.
+ * @return `true` if the unit was successfully destroyed, `false` otherwise.
+ */
+_Check_return_opt_ bool DestroyUnit(
     _Inout_ _Pre_valid_ _Post_invalid_ Unit* pUnit
-);
+    );
 
-#endif
+#endif // UNIT_H

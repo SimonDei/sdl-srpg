@@ -18,4 +18,4 @@ typedef struct _Point {
     INT32 y;
 } Point;
 
-#endif
+#endif // POINT_H
