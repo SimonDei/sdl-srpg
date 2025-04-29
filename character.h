@@ -10,4 +10,4 @@ typedef struct Character {
 
 
 
-#endif // CHARACTER_H
+#endif //CHARACTER_H

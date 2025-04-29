@@ -74,18 +74,60 @@ _Check_return_ FLOAT GetFrameTime(
     void
     );
 
+/**
+ * @brief Checks if a specific key is currently being held down.
+ *
+ * This function returns `true` if the specified key is currently pressed (held down), and `false` otherwise.
+ * It is typically used for continuous input detection, such as movement or held actions in games.
+ *
+ * @param iKey The key code to check.
+ *
+ * @return `true` if the specified key is currently down, `false` otherwise.
+ */
 _Check_return_ bool IsKeyDown(
     _In_ INT iKey
     );
 
+/**
+ * @brief Checks if a specific key is currently released (not held down).
+ *
+ * This function returns `true` if the given key is currently not pressed, and `false` if it is being held down.
+ * It is useful for logic that should only run when a key is no longer active.
+ *
+ * @param iKey The key code to check, typically an SDL key code (e.g., `SDLK_w`, `SDLK_ESCAPE`).
+ *
+ * @return `true` if the key is up (not pressed), `false` if the key is currently down.
+ */
 _Check_return_ bool IsKeyUp(
     _In_ INT iKey
     );
 
+/**
+ * @brief Checks if the left mouse button is currently pressed.
+ *
+ * This function returns a boolean indicating whether the left mouse button is actively held down
+ * at the time the function is called. It is commonly used for selecting, dragging, or initiating actions.
+ *
+ * @return `true` if the left mouse button is pressed, `false` otherwise.
+ *
+ * @note This reflects the real-time state of the button. To detect clicks (press and release),
+ *       additional state tracking may be needed.
+ */
 _Check_return_ bool LeftMousePressed(
     void
     );
 
+/**
+ * @brief Checks if the right mouse button is currently pressed.
+ *
+ * This function returns a boolean indicating whether the right mouse button is being held down
+ * at the time of the call. It is typically used for handling context-specific actions or alternate controls.
+ *
+ * @return `true` if the right mouse button is pressed, `false` otherwise.
+ *
+ * @note This function reflects the real-time state of the mouse. For edge detection (i.e., detecting
+ *       when the button was just pressed), additional logic is usually required.
+ */
 _Check_return_ bool RightMousePressed(
     void
     );
@@ -123,14 +165,46 @@ void DisplayWindow(
     void
     );
 
+/**
+ * @brief Retrieves the width of the application window in pixels.
+ *
+ * This function returns the current width of the window's drawable client area. It is typically
+ * used for calculations related to layout, rendering, or mouse/input positioning.
+ *
+ * @return The width of the window in pixels.
+ *
+ * @note This value may change if the window is resizable and the user or application resizes it.
+ */
 _Check_return_ INT GetWindowWidth(
     void
     );
 
+/**
+ * @brief Retrieves the height of the application window in pixels.
+ *
+ * This function returns the current height of the window's drawable client area. It is typically
+ * used for layout, rendering, or input calculations that depend on window dimensions.
+ *
+ * @return The height of the window in pixels.
+ *
+ * @note This value may change if the window is resized, depending on whether window resizing is enabled.
+ */
 _Check_return_ INT GetWindowHeight(
     void
     );
 
+/**
+ * @brief Retrieves the current X-coordinate of the mouse cursor.
+ *
+ * This function returns the X-coordinate (horizontal position) of the mouse cursor relative to the window's client
+ * area. The value is typically in pixels and represents the distance from the left edge of the window to the
+ * current position of the mouse cursor.
+ *
+ * @return The X-coordinate of the mouse cursor in pixels.
+ *
+ * @note This value updates dynamically as the mouse moves. It is commonly used during the game loop or in
+ *       response to input events to track user interaction.
+ */
 _Check_return_ FLOAT GetMouseX(
     void
     );

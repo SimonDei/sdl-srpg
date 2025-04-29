@@ -33,8 +33,34 @@ typedef enum _RESULT {
     RESULT_REALLOC_FAILED
 } RESULT;
 
+/**
+ * @brief Suppresses compiler warnings for unused function parameters.
+ *
+ * This macro is used to explicitly mark a function parameter as intentionally unused,
+ * preventing compiler warnings (especially in release builds) about unused parameters.
+ *
+ * @param var The name of the unused parameter.
+ */
 #define UnusedParam(var)
 
+/**
+ * @brief Safely frees a dynamically allocated pointer and sets it to NULL.
+ *
+ * This macro checks if a pointer is not `NULL` before freeing it. After calling `free()`, it sets the pointer
+ * to `NULL` to prevent accidental use of a dangling pointer.
+ *
+ * This helps avoid common issues such as double-free errors or accessing freed memory.
+ *
+ * @code
+ * char* pData = malloc(100);
+ * SafeFree(pData);  // Frees pData and sets it to NULL
+ * @endcode
+ *
+ * @param ptr Pointer to dynamically allocated memory to be freed.
+ *
+ * @note This macro is designed for pointers allocated with `malloc`, `calloc`, or `realloc`.
+ *       It should not be used on non-heap memory (e.g., stack variables or string literals).
+ */
 #define SafeFree(ptr) do { \
     if ((ptr) != NULL) { \
         free(ptr); \

@@ -205,4 +205,4 @@ RESULT DestroyAnimatedSprite(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite* pAnimSprite
     );
 
-#endif // ANIMATED_SPRITE_H
+#endif //ANIMATED_SPRITE_H

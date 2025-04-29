@@ -6,7 +6,6 @@
 
 #include <stdio.h>
 #include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
 
 static bool bInitialized = false;
 static INT s_iWindowWidth;
@@ -51,7 +50,13 @@ Window* CreateWindow(
         bInitialized = true;
     }
 
-    pWindow->pDisplay = SDL_CreateWindow(pszTitle, uWidth, uHeight, SDL_WINDOW_HIDDEN);
+    if (uWidth > INT32_MAX || uHeight > INT32_MAX) {
+        SDL_Log("Width or height exceeds maximum value\n");
+        SafeFree(pWindow);
+        return NULL;
+    }
+
+    pWindow->pDisplay = SDL_CreateWindow(pszTitle, (int)uWidth, (int)uHeight, SDL_WINDOW_HIDDEN);
     if (!pWindow->pDisplay) {
         SDL_Log("Failed to create display\n");
         SafeFree(pWindow);
@@ -104,7 +109,7 @@ _Check_return_
 FLOAT GetFrameTime(
     void
 ) {
-    return u64DeltaTime / 1000.0f;
+    return (float)u64DeltaTime / 1000.0f;
 }
 
 _Check_return_

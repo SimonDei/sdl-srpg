@@ -50,4 +50,4 @@ _Check_return_ inline Color CreateColorRGB(
     return (Color) { r, g, b, 255 };
 }
 
-#endif // COLOR_H
+#endif //COLOR_H
