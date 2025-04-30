@@ -23,8 +23,8 @@ static void RecalculateViewMatrix(
     const float tx = -pCamera->x;
     const float ty = -pCamera->y;
 
-    const float cx = (float)GetWindowWidth() / 2.0f;
-    const float cy = (float)GetWindowHeight() / 2.0f;
+    const float cx = (float)Window_GetWidth() / 2.0f;
+    const float cy = (float)Window_GetHeight() / 2.0f;
 
     pCamera->pfViewMatrix[0][0] = cos_r * sx;
     pCamera->pfViewMatrix[0][1] = -sin_r * sy;
@@ -40,7 +40,7 @@ static void RecalculateViewMatrix(
 }
 
 _Check_return_
-Camera CreateCamera(
+Camera Camera_Create(
     _In_ const FLOAT x,
     _In_ const FLOAT y,
     _In_ const FLOAT fWidth,
@@ -62,7 +62,7 @@ Camera CreateCamera(
     return camera;
 }
 
-void SetCameraZoom(
+void Camera_SetZoom(
     _Inout_ Camera* pCamera,
     _In_    const FLOAT fZoom
 ) {
@@ -70,7 +70,7 @@ void SetCameraZoom(
     RecalculateViewMatrix(pCamera);
 }
 
-void SetCameraRotation(
+void Camera_SetRotation(
     _Inout_ Camera* pCamera,
     _In_    const FLOAT fRotation
 ) {
@@ -78,7 +78,7 @@ void SetCameraRotation(
     RecalculateViewMatrix(pCamera);
 }
 
-void SetCameraPosition(
+void Camera_SetPosition(
     _Inout_ Camera* pCamera,
     _In_    const FLOAT x,
     _In_    const FLOAT y
@@ -88,7 +88,7 @@ void SetCameraPosition(
     RecalculateViewMatrix(pCamera);
 }
 
-void SetCameraPositionV(
+void Camera_SetPositionV(
     _Inout_ Camera* pCamera,
     _In_    const Vector2 target
 ) {
@@ -97,7 +97,7 @@ void SetCameraPositionV(
     RecalculateViewMatrix(pCamera);
 }
 
-void MoveCameraPosition(
+void Camera_MovePosition(
     _Inout_ Camera* pCamera,
     _In_    FLOAT dx,
     _In_    FLOAT dy
@@ -113,7 +113,7 @@ void MoveCameraPosition(
     RecalculateViewMatrix(pCamera);
 }
 
-void UseCamera(
+void Camera_Use(
     _In_ Camera* pCamera
 ) {
     s_pCurrentCamera = pCamera;
@@ -184,28 +184,28 @@ Vector2 ScreenToWorldV(
 }
 
 _Check_return_
-FLOAT GetCameraZoom(
+FLOAT Camera_GetZoom(
     void
 ) {
     return s_pCurrentCamera->fZoom;
 }
 
 _Check_return_
-FLOAT GetCameraX(
+FLOAT Camera_GetX(
     void
 ) {
     return s_pCurrentCamera->x;
 }
 
 _Check_return_
-FLOAT GetCameraY(
+FLOAT Camera_GetY(
     void
 ) {
     return s_pCurrentCamera->y;
 }
 
 _Check_return_
-const Camera* GetCurrentCamera(
+const Camera* Camera_GetCurrent(
     void
 ) {
     return s_pCurrentCamera;

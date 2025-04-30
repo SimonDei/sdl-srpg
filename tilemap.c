@@ -59,7 +59,7 @@ static Layer LoadLayer(
 }
 
 _Check_return_
-Tilemap* CreateTilemap(
+Tilemap* Tilemap_Create(
     _In_ const FLOAT fTileWidth,
     _In_ const FLOAT fTileHeight
 ) {
@@ -78,7 +78,7 @@ Tilemap* CreateTilemap(
     return pTilemap;
 }
 
-void LoadTilemapLayer(
+void Tilemap_LoadLayer(
     _Inout_ Tilemap* pTilemap,
     _In_z_  PCSTR pszFilename
 ) {
@@ -86,14 +86,14 @@ void LoadTilemapLayer(
     pTilemap->nCount++;
 }
 
-void SetTilemapTexture(
+void Tilemap_SetTexture(
     _Inout_ Tilemap* pTilemap,
     _In_    const Texture* pTexture
 ) {
     pTilemap->pTilesetTexture = pTexture;
 }
 
-void DrawTilemap(
+void Tilemap_Draw(
     _In_ const Tilemap* pTilemap
 ) {
     for (int nLayer = 0; nLayer < pTilemap->nCount; nLayer++) {
@@ -116,12 +116,12 @@ void DrawTilemap(
             const SDL_FRect dstRect = {
                 screenPos.x,
                 screenPos.y,
-                pTilemap->fTileWidth * GetCameraZoom(),
-                pTilemap->fTileHeight * GetCameraZoom()
+                pTilemap->fTileWidth * Camera_GetZoom(),
+                pTilemap->fTileHeight * Camera_GetZoom()
             };
 
             SDL_RenderTexture(
-                GetWindowRenderer(),
+                Window_GetRenderer(),
                 pTilemap->pTilesetTexture->pBitmap,
                 &srcRect,
                 &dstRect
@@ -143,7 +143,7 @@ Point MapPositionToTile(
 }
 
 _Check_return_opt_
-bool DestroyTilemap(
+bool Tilemap_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Tilemap* pTilemap
 ) {
     if (!pTilemap) {

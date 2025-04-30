@@ -32,7 +32,7 @@ typedef struct _Camera {
  * @param fZoom    Zoom factor for the camera (1.0 for no zoom, greater than 1.0 for zoom-in, less than 1.0 for zoom-out).
  * @return A `Camera` struct initialized with the provided properties.
  */
-_Check_return_ Camera CreateCamera(
+_Check_return_ Camera Camera_Create(
     _In_ FLOAT x,
     _In_ FLOAT y,
     _In_ FLOAT fWidth,
@@ -51,7 +51,7 @@ _Check_return_ Camera CreateCamera(
  * @param fZoom   New zoom level for the camera. A value of 1.0 means no zoom, with higher values
  *                indicating zooming in, and lower values indicating zooming out.
  */
-void SetCameraZoom(
+void Camera_SetZoom(
     _Inout_ Camera* pCamera,
     _In_    FLOAT fZoom
     );
@@ -66,7 +66,7 @@ void SetCameraZoom(
  * @param pCamera Pointer to the `Camera` whose rotation will be updated.
  * @param fRotation New rotation angle for the camera in radians. A value of 0.0 means no rotation.
  */
-void SetCameraRotation(
+void Camera_SetRotation(
     _Inout_ Camera* pCamera,
     _In_    FLOAT fRotation
     );
@@ -81,7 +81,7 @@ void SetCameraRotation(
  * @param x       New X coordinate for the camera's position.
  * @param y       New Y coordinate for the camera's position.
  */
-void SetCameraPosition(
+void Camera_SetPosition(
     _Inout_ Camera* pCamera,
     _In_    FLOAT x,
     _In_    FLOAT y
@@ -96,7 +96,7 @@ void SetCameraPosition(
  * @param pCamera Pointer to the `Camera` whose position will be updated.
  * @param target  A `Vector2` struct containing the new X and Y coordinates for the camera's position.
  */
-void SetCameraPositionV(
+void Camera_SetPositionV(
     _Inout_ Camera* pCamera,
     _In_    Vector2 target
     );
@@ -112,7 +112,7 @@ void SetCameraPositionV(
  * @param dx The amount to move the camera along the X-axis.
  * @param dy The amount to move the camera along the Y-axis.
  */
-void MoveCameraPosition(
+void Camera_MovePosition(
     _Inout_ Camera* pCamera,
     _In_    FLOAT dx,
     _In_    FLOAT dy
@@ -127,7 +127,7 @@ void MoveCameraPosition(
  *
  * @param pCamera Pointer to the `Camera` to be used for rendering.
  */
-void UseCamera(
+void Camera_Use(
     _In_ Camera* pCamera
     );
 
@@ -199,7 +199,7 @@ _Check_return_ Vector2 ScreenToWorldV(
  *
  * @return The current zoom level of the camera.
  */
-_Check_return_ FLOAT GetCameraZoom(
+_Check_return_ FLOAT Camera_GetZoom(
     void
     );
 
@@ -211,7 +211,7 @@ _Check_return_ FLOAT GetCameraZoom(
  *
  * @return The current X position of the camera.
  */
-_Check_return_ FLOAT GetCameraX(
+_Check_return_ FLOAT Camera_GetX(
     void
     );
 
@@ -223,7 +223,7 @@ _Check_return_ FLOAT GetCameraX(
  *
  * @return The current Y position of the camera.
  */
-_Check_return_ FLOAT GetCameraY(
+_Check_return_ FLOAT Camera_GetY(
     void
     );
 
@@ -235,7 +235,7 @@ _Check_return_ FLOAT GetCameraY(
  *
  * @return A pointer to the currently active `Camera`, or `NULL` if no camera is currently active.
  */
-_Check_return_ const Camera* GetCurrentCamera(
+_Check_return_ const Camera* Camera_GetCurrent(
     void
     );
 

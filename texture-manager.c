@@ -13,7 +13,7 @@
 #include "utils.h"
 
 _Ret_maybenull_
-TextureManager* CreateTextureManager(
+TextureManager* TextureManager_Create(
     void
 ) {
     TextureManager* pManager = malloc(sizeof(TextureManager));
@@ -35,7 +35,7 @@ TextureManager* CreateTextureManager(
 }
 
 _Check_return_opt_
-bool LoadTexture(
+bool TextureManager_LoadTexture(
     _In_   TextureManager* pManager,
     _In_z_ PCSTR pszName,
     _In_z_ PCSTR pszFilename
@@ -62,7 +62,7 @@ bool LoadTexture(
 }
 
 _Check_return_
-Texture* GetTexture(
+Texture* TextureManager_GetTexture(
     _In_   const TextureManager* pManager,
     _In_z_ PCSTR pszName
 ) {
@@ -75,7 +75,7 @@ Texture* GetTexture(
 }
 
 _Check_return_opt_
-bool DestroyTextureManager(
+bool TextureManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TextureManager* pManager
 ) {
     if (!pManager || !pManager->arrTextureEntries) {

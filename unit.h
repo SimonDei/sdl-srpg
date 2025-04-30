@@ -27,7 +27,7 @@ typedef struct _Unit {
  * 
  * @return A pointer to the created unit, or NULL on failure.
  */
-_Check_return_ _Ret_maybenull_ Unit* CreateUnitFromAnimatedSprite(
+_Check_return_ _Ret_maybenull_ Unit* Unit_CreateFromAnimatedSprite(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
     _In_ INT iTileX,
     _In_ INT iTileY
@@ -43,7 +43,7 @@ _Check_return_ _Ret_maybenull_ Unit* CreateUnitFromAnimatedSprite(
  * @param pUnit    Pointer to the `Unit` that will be drawn.
  * @param pTilemap Pointer to the `Tilemap` used to determine the unit's placement in the game world.
  */
-void DrawUnit(
+void Unit_Draw(
     _In_ const Unit* pUnit,
     _In_ const Tilemap* pTilemap
     );
@@ -59,7 +59,7 @@ void DrawUnit(
  * @param dx    The amount to move the unit along the X-axis.
  * @param dy    The amount to move the unit along the Y-axis.
  */
-void MoveUnit(
+void Unit_Move(
     _Inout_ Unit* pUnit,
     _In_    INT dx,
     _In_    INT dy
@@ -79,7 +79,7 @@ void MoveUnit(
  * @param fMouseY  The Y coordinate of the mouse in screen space.
  * @return A pointer to the `Unit` at the specified screen position, or `NULL` if no unit is found.
  */
-_Check_return_ Unit* GetUnitAtScreenPosition(
+_Check_return_ Unit* Unit_GetAtScreenPosition(
     _In_reads_(nCount) Unit* pUnits,
     _In_               INT nCount,
     _In_               const Tilemap* pTilemap,
@@ -96,7 +96,7 @@ _Check_return_ Unit* GetUnitAtScreenPosition(
  * @param pUnit Pointer to the `Unit` that will be destroyed.
  * @return `true` if the unit was successfully destroyed, `false` otherwise.
  */
-_Check_return_opt_ bool DestroyUnit(
+_Check_return_opt_ bool Unit_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Unit* pUnit
     );
 

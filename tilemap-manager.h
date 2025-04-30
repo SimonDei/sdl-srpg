@@ -28,8 +28,7 @@ typedef struct _TilemapManager {
  *
  * @return A pointer to the newly created `TilemapManager`, or `NULL` if the creation failed.
  */
-_Check_return_
-TilemapManager* CreateTilemapManager(
+_Check_return_ TilemapManager* TilemapManager_Create(
     void
     );
 
@@ -46,8 +45,7 @@ TilemapManager* CreateTilemapManager(
  *
  * @return A pointer to the newly added `Tilemap`, or `NULL` if the operation failed.
  */
-_Check_return_
-Tilemap* AddTilemap(
+_Check_return_ Tilemap* TilemapManager_AddTilemap(
     _Inout_ TilemapManager* pManager,
     _In_z_  PCSTR pszName,
     _In_    INT iTileWidth,
@@ -66,8 +64,7 @@ Tilemap* AddTilemap(
  *
  * @note The caller should ensure that the `TilemapManager` is no longer used after it has been destroyed.
  */
-_Check_return_opt_
-bool DestroyTilemapManager(
+_Check_return_opt_ bool TilemapManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TilemapManager* pManager
     );
 

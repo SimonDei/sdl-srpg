@@ -99,12 +99,12 @@ void DrawSprite(
     const SDL_FRect dstRect = {
         screenPos.x,
         screenPos.y,
-        pSprite->pTexture->fWidth * pSprite->fScaleX * GetCameraZoom(),
-        pSprite->pTexture->fHeight * pSprite->fScaleY * GetCameraZoom()
+        pSprite->pTexture->fWidth * pSprite->fScaleX * Camera_GetZoom(),
+        pSprite->pTexture->fHeight * pSprite->fScaleY * Camera_GetZoom()
     };
 
     SDL_RenderTexture(
-        GetWindowRenderer(),
+        Window_GetRenderer(),
         pSprite->pTexture->pBitmap,
         &srcRect,
         &dstRect

@@ -8,62 +8,73 @@
 #include "unit.h"
 
 int main(void) {
-    Window* window = CreateWindow(500, 200, 1024, 768, "Allegro window");
+    Window* window = Window_Create(500, 200, 1024, 768, "SDL3 window");
     assert(window);
 
-    TextureManager* textureManager = CreateTextureManager();
+    TextureManager* textureManager = TextureManager_Create();
     assert(textureManager);
-    LoadTexture(textureManager, "spritesheet", "basictiles.tga");
-    LoadTexture(textureManager, "character", "character.tga");
+    TextureManager_LoadTexture(textureManager, "spritesheet", "basictiles.tga");
+    TextureManager_LoadTexture(textureManager, "character", "character.tga");
+    TextureManager_LoadTexture(textureManager, "hero1", "peopleA1.png");
 
-    TilemapManager* tilemapManager = CreateTilemapManager();
-    Tilemap* level1Tilemap = AddTilemap(tilemapManager, "level1", 16, 16);
-    LoadTilemapLayer(level1Tilemap, "level1_layer1.txt");
-    LoadTilemapLayer(level1Tilemap, "level1_layer2.txt");
-    LoadTilemapLayer(level1Tilemap, "level1_layer3.txt");
-    LoadTilemapLayer(level1Tilemap, "level1_layer4.txt");
-    SetTilemapTexture(level1Tilemap, GetTexture(textureManager, "spritesheet"));
+    TilemapManager* tilemapManager = TilemapManager_Create();
+    Tilemap* level1Tilemap = TilemapManager_AddTilemap(tilemapManager, "level1", 16, 16);
+    Tilemap_LoadLayer(level1Tilemap, "level1_layer1.txt");
+    Tilemap_LoadLayer(level1Tilemap, "level1_layer2.txt");
+    Tilemap_LoadLayer(level1Tilemap, "level1_layer3.txt");
+    Tilemap_LoadLayer(level1Tilemap, "level1_layer4.txt");
+    Tilemap_SetTexture(level1Tilemap, TextureManager_GetTexture(textureManager, "spritesheet"));
 
-    AnimatedSprite* character = CreateAnimatedSprite(GetTexture(textureManager, "character"), 16, 16);
+    AnimatedSprite* character = AnimatedSprite_Create(TextureManager_GetTexture(textureManager, "character"), 16, 16);
     assert(character);
-    AddAnimatedSpriteAnimation(character, "forward", 0, 4, 300);
-    SetActiveAnimatedSpriteAnimation(character, "forward");
+    AnimatedSprite_AddAnimation(character, "forward", 16, 16, 0, 4, 300);
+    AnimatedSprite_SetActiveAnimation(character, "forward");
 
-    Unit* player = CreateUnitFromAnimatedSprite(&character, 1, 1);
+    AnimatedSprite* hero1 = AnimatedSprite_Create(TextureManager_GetTexture(textureManager, "hero1"), 32, 32);
+    assert(hero1);
+    AnimatedSprite_SetScale(hero1, 0.33f);
+    AnimatedSprite_LoadAnimationsFromFile(hero1, "hero-animation.xml");
+    AnimatedSprite_SetActiveAnimation(hero1, "left");
+
+    Unit* player = Unit_CreateFromAnimatedSprite(&character, 1, 1);
     assert(player);
 
-    Camera camera = CreateCamera(0, 0, 400, 400, 0, 4);
-    UseCamera(&camera);
+    Camera camera = Camera_Create(0, 0, 400, 400, 0, 4);
+    Camera_Use(&camera);
     
-    while (IsWindowOpen(window)) {
+    while (Window_IsOpen(window)) {
         if (IsKeyDown(KEYCODE_W)) {
-            MoveCameraPosition(&camera, 0, -100 * GetFrameTime());
+            Camera_MovePosition(&camera, 0, -100 * GetFrameTime());
         }
 
         if (IsKeyDown(KEYCODE_S)) {
-            MoveCameraPosition(&camera, 0, 100 * GetFrameTime());
+            Camera_MovePosition(&camera, 0, 100 * GetFrameTime());
         }
 
         if (IsKeyDown(KEYCODE_A)) {
-            MoveCameraPosition(&camera, -100 * GetFrameTime(), 0);
+            Camera_MovePosition(&camera, -100 * GetFrameTime(), 0);
         }
 
         if (IsKeyDown(KEYCODE_D)) {
-            MoveCameraPosition(&camera, 100 * GetFrameTime(), 0);
+            Camera_MovePosition(&camera, 100 * GetFrameTime(), 0);
         }
 
-        ClearWindow(0, 0, 0);
+        Window_Clear(0, 0, 0);
 
-        DrawTilemap(level1Tilemap);
-        DrawUnit(player, level1Tilemap);
+        Tilemap_Draw(level1Tilemap);
+        //DrawUnit(player, level1Tilemap);
+        AnimatedSprite_Draw(hero1);
 
-        DisplayWindow();
+        Window_Display();
+
+        AnimatedSprite_Update(hero1);
     }
 
-    DestroyUnit(player);
-    DestroyTilemapManager(tilemapManager);
-    DestroyTextureManager(textureManager);
-    DestroyWindow(window);
+    Unit_Destroy(player);
+    AnimatedSprite_Destroy(hero1);
+    TilemapManager_Destroy(tilemapManager);
+    TextureManager_Destroy(textureManager);
+    Window_Destroy(window);
 
     return 0;
 }

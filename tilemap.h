@@ -17,7 +17,7 @@ typedef struct _Tilemap {
     INT nCapacity;
     FLOAT fTileWidth;
     FLOAT fTileHeight;
-    Texture* pTilesetTexture;
+    const Texture* pTilesetTexture;
 } Tilemap;
 
 /**
@@ -31,8 +31,7 @@ typedef struct _Tilemap {
  *
  * @return A pointer to the newly created `Tilemap`, or `NULL` if the creation failed.
  */
-_Check_return_
-Tilemap* CreateTilemap(
+_Check_return_ Tilemap* Tilemap_Create(
     _In_ FLOAT fTileWidth,
     _In_ FLOAT fTileHeight
     );
@@ -50,7 +49,7 @@ Tilemap* CreateTilemap(
  * @note The file should be in the correct format expected by the system. This function will overwrite any existing
  *       layer data in the tilemap.
  */
-void LoadTilemapLayer(
+void Tilemap_LoadLayer(
     _Inout_ Tilemap* pTilemap,
     _In_z_  PCSTR pszFilename
     );
@@ -66,7 +65,7 @@ void LoadTilemapLayer(
  *
  * @note The texture should contain the necessary tiles in the expected layout for proper rendering.
  */
-void SetTilemapTexture(
+void Tilemap_SetTexture(
     _Inout_ Tilemap* pTilemap,
     _In_    const Texture* pTexture
     );
@@ -83,7 +82,7 @@ void SetTilemapTexture(
  * @note The function uses the current rendering context, so ensure that the camera, projection, and other settings
  *       are correctly configured before drawing the tilemap.
  */
-void DrawTilemap(
+void Tilemap_Draw(
     _In_ const Tilemap* pTilemap
     );
 
@@ -101,8 +100,7 @@ void DrawTilemap(
  * @return A `Point` structure containing the tile's row (`x`) and column (`y`) corresponding to the given world
  *         position.
  */
-_Check_return_
-Point MapPositionToTile(
+_Check_return_ Point MapPositionToTile(
     _In_ const Tilemap* pTilemap,
     _In_ FLOAT x,
     _In_ FLOAT y
@@ -121,8 +119,7 @@ Point MapPositionToTile(
  *
  * @note The caller should ensure that the `Tilemap` is no longer used after it has been destroyed.
  */
-_Check_return_opt_
-bool DestroyTilemap(
+_Check_return_opt_ bool Tilemap_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Tilemap* pTilemap
     );
 

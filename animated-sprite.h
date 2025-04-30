@@ -8,11 +8,14 @@ typedef struct _Texture Texture;
 
 typedef struct _Animation {
     PCSTR pszName;
+    INT iStartFrame;
     INT iCurrentFrame;
     INT nFrameCount;
-    FLOAT fFrameSize;
+    FLOAT fFrameSizeX;
+    FLOAT fFrameSizeY;
     UINT64 u64LastTime;
     UINT64 u64FrameTime;
+    bool bPlaying;
 } Animation;
 
 typedef struct _AnimatedSprite {
@@ -34,8 +37,7 @@ typedef struct _AnimatedSprite {
  * @param y        The Y coordinate in world space for the initial position of the animated sprite.
  * @return A pointer to an `AnimatedSprite` object, or `NULL` if the sprite could not be created.
  */
-_Ret_maybenull_
-AnimatedSprite* CreateAnimatedSprite(
+_Ret_maybenull_ AnimatedSprite* AnimatedSprite_Create(
     _In_ Texture* pTexture,
     _In_ FLOAT x,
     _In_ FLOAT y
@@ -57,9 +59,8 @@ AnimatedSprite* CreateAnimatedSprite(
  *
  * @note The caller is responsible for freeing the allocated memory when it is no longer needed.
  */
-_Check_return_opt_
-_Success_(return == 0)
-RESULT AllocateAnimatedSprite(
+_Check_return_opt_ _Success_(return == 0) RESULT
+AnimatedSprite_Allocate(
     _In_                          Texture* pTexture,
     _In_                          FLOAT x,
     _In_                          FLOAT y,
@@ -75,18 +76,27 @@ RESULT AllocateAnimatedSprite(
  *
  * @param pAnimSprite  Pointer to the `AnimatedSprite` to which the animation will be added.
  * @param pszName      The name of the animation. This will be used to identify and play the animation.
+ * @param fFrameSizeX  The width of each frame in the animation.
+ * @param fFrameSizeY  The height of each frame in the animation.
  * @param iStartFrame  The index of the starting frame for the animation.
  * @param nFrameCount  The total number of frames in the animation.
  * @param u64FrameTime The duration (in milliseconds) for each frame of the animation.
  * @return `RESULT` indicating the success or failure of the operation.
  *         A successful result should return `0`, while non-zero values indicate failure.
  */
-RESULT AddAnimatedSpriteAnimation(
+RESULT AnimatedSprite_AddAnimation(
     _Inout_ AnimatedSprite* pAnimSprite,
     _In_z_  PCSTR pszName,
+    _In_    FLOAT fFrameSizeX,
+    _In_    FLOAT fFrameSizeY,
     _In_    INT iStartFrame,
     _In_    INT nFrameCount,
     _In_    UINT64 u64FrameTime
+    );
+
+void AnimatedSprite_LoadAnimationsFromFile(
+    _Inout_ AnimatedSprite* pAnimSprite,
+    _In_z_  PCSTR pszFileName
     );
 
 /**
@@ -100,7 +110,7 @@ RESULT AddAnimatedSpriteAnimation(
  *
  * @note If the animation name does not exist or is invalid, the function may have no effect.
  */
-void SetActiveAnimatedSpriteAnimation(
+void AnimatedSprite_SetActiveAnimation(
     _Inout_ AnimatedSprite* pAnimSprite,
     _In_z_  PCSTR pszName
     );
@@ -114,7 +124,7 @@ void SetActiveAnimatedSpriteAnimation(
  * @param pAnimSprite Pointer to the `AnimatedSprite` to be drawn. The sprite must have an active animation set
  *                    and the animation must be updated to display the correct frame.
  */
-void DrawAnimatedSprite(
+void AnimatedSprite_Draw(
     _In_ const AnimatedSprite* pAnimSprite
     );
 
@@ -130,7 +140,7 @@ void DrawAnimatedSprite(
  *
  * @note The function does not perform any rendering. It only updates the sprite's animation state.
  */
-void UpdateAnimatedSprite(
+void AnimatedSprite_Update(
     _In_ const AnimatedSprite* pAnimSprite
     );
 
@@ -148,7 +158,7 @@ void UpdateAnimatedSprite(
  * @note This function bypasses the normal animation progression and directly sets the sprite to the
  *       specified frame. Ensure that the frame index is within the valid range of frames for the specified animation.
  */
-void SetAnimatedSpriteFrame(
+void AnimatedSprite_SetFrame(
     _In_   const AnimatedSprite* pAnimSprite,
     _In_z_ PCSTR pszName,
     _In_   INT iFrame
@@ -168,10 +178,20 @@ void SetAnimatedSpriteFrame(
  * @note Adjusting the animation speed affects how quickly the frames of the animation change. Ensure that the speed
  *       value is appropriate for the intended effect. A speed of `0` may result in the animation not progressing.
  */
-void SetAnimatedSpriteSpeed(
+void AnimatedSprite_SetSpeed(
     _In_   const AnimatedSprite* pAnimSprite,
     _In_z_ PCSTR pszName,
     _In_   UINT64 u64Speed
+    );
+
+void AnimatedSprite_SetScale(
+    _In_   const AnimatedSprite* pAnimSprite,
+    _In_   FLOAT fScale
+    );
+
+void AnimatedSprite_SetPlaying(
+    _Inout_ const AnimatedSprite* pAnimSprite,
+    _In_    bool bPlaying
     );
 
 /**
@@ -183,8 +203,7 @@ void SetAnimatedSpriteSpeed(
  * @param pAnimSprite Pointer to the `AnimatedSprite` whose active animation name will be retrieved.
  * @return A string representing the name of the currently active animation, or `NULL` if no animation is active.
  */
-_Check_return_
-PCSTR GetCurrentAnimatedSpriteName(
+_Check_return_ PCSTR AnimatedSprite_GetCurrentName(
     _In_ const AnimatedSprite* pAnimSprite
     );
 
@@ -200,8 +219,7 @@ PCSTR GetCurrentAnimatedSpriteName(
  *
  * @note The caller is responsible for ensuring that the sprite is no longer used after being destroyed.
  */
-_Check_return_opt_
-RESULT DestroyAnimatedSprite(
+_Check_return_opt_ RESULT AnimatedSprite_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite* pAnimSprite
     );
 

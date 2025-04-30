@@ -11,7 +11,7 @@
 #include "tilemap.h"
 
 _Check_return_
-TilemapManager* CreateTilemapManager(
+TilemapManager* TilemapManager_Create(
     void
 ) {
     TilemapManager* pManager = malloc(sizeof(TilemapManager));
@@ -33,7 +33,7 @@ TilemapManager* CreateTilemapManager(
 }
 
 _Check_return_
-Tilemap* AddTilemap(
+Tilemap* TilemapManager_AddTilemap(
     _Inout_ TilemapManager* pManager,
     _In_z_  PCSTR pszName,
     _In_    const INT iTileWidth,
@@ -49,7 +49,7 @@ Tilemap* AddTilemap(
     }
 
     pManager->arrTilemapEntries[pManager->nCount].pszName = pszName;
-    pManager->arrTilemapEntries[pManager->nCount].pTilemap = CreateTilemap(iTileWidth, iTileHeight);
+    pManager->arrTilemapEntries[pManager->nCount].pTilemap = Tilemap_Create(iTileWidth, iTileHeight);
 
     pManager->nCount++;
 
@@ -57,7 +57,7 @@ Tilemap* AddTilemap(
 }
 
 _Check_return_opt_
-bool DestroyTilemapManager(
+bool TilemapManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TilemapManager* pManager
 ) {
     if (!pManager) {
@@ -66,7 +66,7 @@ bool DestroyTilemapManager(
 
     for (int i = 0; i < pManager->nCount; i++) {
         if (pManager->arrTilemapEntries[i].pTilemap) {
-            DestroyTilemap(pManager->arrTilemapEntries[i].pTilemap);
+            Tilemap_Destroy(pManager->arrTilemapEntries[i].pTilemap);
         }
     }
 

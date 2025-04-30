@@ -44,12 +44,12 @@ void DrawTile(
     const SDL_FRect dstRect = {
         screenPos.x,
         screenPos.y,
-        pTileset->fTileWidth * GetCameraZoom(),
-        pTileset->fTileHeight * GetCameraZoom()
+        pTileset->fTileWidth * Camera_GetZoom(),
+        pTileset->fTileHeight * Camera_GetZoom()
     };
 
     SDL_RenderTexture(
-        GetWindowRenderer(),
+        Window_GetRenderer(),
         pTileset->pTexture->pBitmap,
         &srcRect,
         &dstRect

@@ -28,7 +28,7 @@ typedef struct _TextureManager {
  *
  * @return A pointer to the newly created `TextureManager` object, or `NULL` if the creation failed.
  */
-_Ret_maybenull_ TextureManager* CreateTextureManager(
+_Ret_maybenull_ TextureManager* TextureManager_Create(
     void
     );
 
@@ -43,7 +43,7 @@ _Ret_maybenull_ TextureManager* CreateTextureManager(
  * @param pszFilename Path to the texture file to be loaded.
  * @return `true` if the texture was successfully loaded, `false` otherwise (e.g., if the file could not be loaded).
  */
-_Check_return_opt_ bool LoadTexture(
+_Check_return_opt_ bool TextureManager_LoadTexture(
     _In_   TextureManager* pManager,
     _In_z_ PCSTR pszName,
     _In_z_ PCSTR pszFilename
@@ -59,7 +59,7 @@ _Check_return_opt_ bool LoadTexture(
  * @param pszName  The name associated with the texture to retrieve.
  * @return A pointer to the `Texture` if found, or `NULL` if no texture is associated with the given name.
  */
-_Check_return_ Texture* GetTexture(
+_Check_return_ Texture* TextureManager_GetTexture(
     _In_   const TextureManager* pManager,
     _In_z_ PCSTR pszName
     );
@@ -74,7 +74,7 @@ _Check_return_ Texture* GetTexture(
  * @param pManager Pointer to the `TextureManager` to be destroyed. After the function call, the manager is no longer valid.
  * @return `true` if the texture manager was successfully destroyed and all resources freed, `false` otherwise.
  */
-_Check_return_opt_ bool DestroyTextureManager(
+_Check_return_opt_ bool TextureManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TextureManager* pManager
     );
 

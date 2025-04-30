@@ -28,7 +28,7 @@ static void InitializeSDL(
 }
 
 _Ret_maybenull_
-Window* CreateWindow(
+Window* Window_Create(
     _In_   const INT x,
     _In_   const INT y,
     _In_   const UINT uWidth,
@@ -85,7 +85,7 @@ Window* CreateWindow(
 }
 
 _Check_return_
-bool IsWindowOpen(
+bool Window_IsOpen(
     _In_ Window* pWindow
 ) {
     while (SDL_PollEvent(&lastEvent)) {
@@ -140,7 +140,7 @@ bool RightMousePressed(
     return s_mouseState & SDL_BUTTON_RMASK;
 }
 
-void ClearWindow(
+void Window_Clear(
     _In_ const BYTE byRed,
     _In_ const BYTE byGreen,
     _In_ const BYTE byBlue
@@ -149,21 +149,21 @@ void ClearWindow(
     SDL_RenderClear(s_pRenderer);
 }
 
-void DisplayWindow(
+void Window_Display(
     void
 ) {
     SDL_RenderPresent(s_pRenderer);
 }
 
 _Check_return_
-INT GetWindowWidth(
+INT Window_GetWidth(
     void
 ) {
     return s_iWindowWidth;
 }
 
 _Check_return_
-INT GetWindowHeight(
+INT Window_GetHeight(
     void
 ) {
     return s_iWindowHeight;
@@ -184,14 +184,14 @@ FLOAT GetMouseY(
 }
 
 _Check_return_
-SDL_Renderer* GetWindowRenderer(
+SDL_Renderer* Window_GetRenderer(
     void
 ) {
     return s_pRenderer;
 }
 
 _Check_return_opt_
-bool DestroyWindow(
+bool Window_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Window* pWindow
 ) {
     if (!pWindow || !pWindow->pDisplay) {

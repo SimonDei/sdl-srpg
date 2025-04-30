@@ -37,7 +37,7 @@ typedef struct _Window {
  * @note If the window creation fails, `NULL` will be returned. The caller should handle any potential errors
  *       (e.g., by checking the returned value before using the window).
  */
-_Ret_maybenull_ Window* CreateWindow(
+_Ret_maybenull_ Window* Window_Create(
     _In_   INT x,
     _In_   INT y,
     _In_   UINT uWidth,
@@ -55,7 +55,7 @@ _Ret_maybenull_ Window* CreateWindow(
  *
  * @return `true` if the window is still open, or `false` if the window has been closed.
  */
-_Check_return_ bool IsWindowOpen(
+_Check_return_ bool Window_IsOpen(
     _In_ Window* pWindow
     );
 
@@ -145,7 +145,7 @@ _Check_return_ bool RightMousePressed(
  *
  * @note This function clears the window to the specified color, potentially overwriting any existing content on the screen.
  */
-void ClearWindow(
+void Window_Clear(
     _In_ BYTE byRed,
     _In_ BYTE byGreen,
     _In_ BYTE byBlue
@@ -161,7 +161,7 @@ void ClearWindow(
  * @note This function is usually part of a render loop and should be called after all drawing and rendering
  *       operations for the current frame have been completed.
  */
-void DisplayWindow(
+void Window_Display(
     void
     );
 
@@ -175,7 +175,7 @@ void DisplayWindow(
  *
  * @note This value may change if the window is resizable and the user or application resizes it.
  */
-_Check_return_ INT GetWindowWidth(
+_Check_return_ INT Window_GetWidth(
     void
     );
 
@@ -189,7 +189,7 @@ _Check_return_ INT GetWindowWidth(
  *
  * @note This value may change if the window is resized, depending on whether window resizing is enabled.
  */
-_Check_return_ INT GetWindowHeight(
+_Check_return_ INT Window_GetHeight(
     void
     );
 
@@ -238,7 +238,7 @@ _Check_return_ FLOAT GetMouseY(
  * @note The returned renderer should be used in conjunction with SDL rendering functions. The caller should not
  *       modify or destroy the renderer directly unless appropriate cleanup is performed.
  */
-_Check_return_ SDL_Renderer* GetWindowRenderer(
+_Check_return_ SDL_Renderer* Window_GetRenderer(
     void
     );
 
@@ -255,7 +255,7 @@ _Check_return_ SDL_Renderer* GetWindowRenderer(
  *
  * @note The caller should ensure that the window is no longer used after it has been destroyed.
  */
-_Check_return_opt_ bool DestroyWindow(
+_Check_return_opt_ bool Window_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Window* pWindow
     );
 

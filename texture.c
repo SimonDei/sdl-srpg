@@ -23,7 +23,7 @@ Texture* CreateTexture(
 
     pTexture->color = (Color){ 255, 255, 255, 255 };
     pTexture->pszFilename = pszFilename;
-    pTexture->pBitmap = IMG_LoadTexture(GetWindowRenderer(), pszFilename);
+    pTexture->pBitmap = IMG_LoadTexture(Window_GetRenderer(), pszFilename);
     if (!pTexture->pBitmap) {
         SDL_Log("Failed to load texture from %s\n", pszFilename);
         SafeFree(pTexture);
