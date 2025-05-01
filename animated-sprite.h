@@ -185,8 +185,8 @@ void AnimatedSprite_SetSpeed(
     );
 
 void AnimatedSprite_SetScale(
-    _In_   const AnimatedSprite* pAnimSprite,
-    _In_   FLOAT fScale
+    _In_ const AnimatedSprite* pAnimSprite,
+    _In_ FLOAT fScale
     );
 
 void AnimatedSprite_SetPlaying(

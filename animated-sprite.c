@@ -97,8 +97,8 @@ RESULT AnimatedSprite_AddAnimation(
 
 static void ParseXmlNodeContentFloat(
     _Out_ FLOAT* pfValue,
-    _In_ struct xml_node* pXmlNode,
-    _In_ const INT iNode
+    _In_  struct xml_node* pXmlNode,
+    _In_  const INT iNode
 ) {
     BYTE* pNodeContent = xml_easy_content(xml_node_child(pXmlNode, iNode));
     PSTR pszNodeContent = NULL;
@@ -108,8 +108,8 @@ static void ParseXmlNodeContentFloat(
 
 static void ParseXmlNodeContentInt(
     _Out_ INT* pnValue,
-    _In_ struct xml_node* pXmlNode,
-    _In_ const INT iNode
+    _In_  struct xml_node* pXmlNode,
+    _In_  const INT iNode
 ) {
     BYTE* pNodeContent = xml_easy_content(xml_node_child(pXmlNode, iNode));
     PSTR pszNodeContent = NULL;
@@ -119,8 +119,8 @@ static void ParseXmlNodeContentInt(
 
 static void ParseXmlNodeContentUlong(
     _Out_ ULONG* pu64Value,
-    _In_ struct xml_node* pXmlNode,
-    _In_ const INT iNode
+    _In_  struct xml_node* pXmlNode,
+    _In_  const INT iNode
 ) {
     BYTE* pNodeContent = xml_easy_content(xml_node_child(pXmlNode, iNode));
     PSTR pszNodeContent = NULL;
@@ -195,7 +195,7 @@ void AnimatedSprite_LoadAnimationsFromFile(
     }
 
     xml_document_free(pXmlDocument, false);
-    free(pszBuffer);
+    SafeFree(pszBuffer);
 }
 
 void AnimatedSprite_SetActiveAnimation(
@@ -272,7 +272,7 @@ void AnimatedSprite_SetFrame(
 void AnimatedSprite_SetSpeed(
     _In_   const AnimatedSprite* pAnimSprite,
     _In_z_ PCSTR pszName,
-    _In_   UINT64 u64Speed
+    _In_   const UINT64 u64Speed
 ) {
     for (int i = 0; i < pAnimSprite->nCount; i++) {
         if (strcmp(pAnimSprite->arrAnimations[i].pszName, pszName) == 0) {
@@ -282,8 +282,8 @@ void AnimatedSprite_SetSpeed(
 }
 
 void AnimatedSprite_SetScale(
-    _In_   const AnimatedSprite* pAnimSprite,
-    _In_   const FLOAT fScale
+    _In_ const AnimatedSprite* pAnimSprite,
+    _In_ const FLOAT fScale
 ) {
     SetSpriteScale(pAnimSprite->pSprite, fScale, fScale);
 }
