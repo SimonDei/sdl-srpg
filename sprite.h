@@ -30,7 +30,7 @@ typedef struct _Sprite {
  * @param y        Y coordinate for the initial position of the sprite.
  * @return A pointer to the newly created sprite, or `NULL` if the creation failed.
  */
-_Ret_maybenull_ Sprite* CreateSprite(
+_Ret_maybenull_ Sprite* Sprite_Create(
     _In_ Texture* pTexture,
     _In_ FLOAT x,
     _In_ FLOAT y
@@ -45,7 +45,7 @@ _Ret_maybenull_ Sprite* CreateSprite(
  * @param pSprite Pointer to the Sprite whose visibility will be changed.
  * @param bVisible Boolean flag indicating whether the sprite should be visible (`true`) or hidden (`false`).
  */
-void SetSpriteVisible(
+void Sprite_SetVisible(
     _Inout_ Sprite* pSprite,
     _In_    bool bVisible
     );
@@ -60,7 +60,7 @@ void SetSpriteVisible(
  * @param fScaleX Horizontal scale factor. A value of 1.0 means no scaling.
  * @param fScaleY Vertical scale factor. A value of 1.0 means no scaling.
  */
-void SetSpriteScale(
+void Sprite_SetScale(
     _Inout_ Sprite* pSprite,
     _In_    FLOAT fScaleX,
     _In_    FLOAT fScaleY
@@ -74,7 +74,7 @@ void SetSpriteScale(
  * @param pSprite Pointer to the Sprite whose X position will be set.
  * @param x       New X coordinate for the sprite.
  */
-void SetSpriteX(
+void Sprite_SetX(
     _Inout_ Sprite* pSprite,
     _In_    FLOAT x
     );
@@ -87,7 +87,7 @@ void SetSpriteX(
  * @param pSprite Pointer to the Sprite whose Y position will be set.
  * @param y       New Y coordinate for the sprite.
  */
-void SetSpriteY(
+void Sprite_SetY(
     _Inout_ Sprite* pSprite,
     _In_    FLOAT y
     );
@@ -101,7 +101,7 @@ void SetSpriteY(
  * @param x       New X coordinate for the sprite.
  * @param y       New Y coordinate for the sprite.
  */
-void SetSpritePosition(
+void Sprite_SetPosition(
     _Inout_ Sprite* pSprite,
     _In_    FLOAT x,
     _In_    FLOAT y
@@ -115,12 +115,12 @@ void SetSpritePosition(
  * @param pSprite Pointer to the Sprite whose texture will be set.
  * @param pTexture Pointer to the Texture to be applied to the sprite.
  */
-void SetSpriteTexture(
+void Sprite_SetTexture(
     _Inout_ Sprite* pSprite,
     _In_    const Texture* pTexture
     );
 
-void DrawSprite(
+void Sprite_Draw(
     _In_ const Sprite* pSprite
     );
 
@@ -132,7 +132,7 @@ void DrawSprite(
  * @param pSprite Pointer to the Sprite whose position is to be retrieved.
  * @return A `Vector2` struct containing the X and Y position of the sprite.
  */
-_Check_return_ Vector2 GetSpritePositionV(
+_Check_return_ Vector2 Sprite_GetPositionV(
     _In_ const Sprite* pSprite
     );
 
@@ -145,7 +145,7 @@ _Check_return_ Vector2 GetSpritePositionV(
  * @param pSprite Pointer to the Sprite whose width is to be retrieved.
  * @return The width of the sprite as a `FLOAT` value.
  */
-_Check_return_ FLOAT GetSpriteWidth(
+_Check_return_ FLOAT Sprite_GetWidth(
     _In_ const Sprite* pSprite
     );
 
@@ -158,7 +158,7 @@ _Check_return_ FLOAT GetSpriteWidth(
  * @param pSprite Pointer to the Sprite whose height is to be retrieved.
  * @return The height of the sprite as a `FLOAT` value.
  */
-_Check_return_ FLOAT GetSpriteHeight(
+_Check_return_ FLOAT Sprite_GetHeight(
     _In_ const Sprite* pSprite
     );
 
@@ -170,7 +170,7 @@ _Check_return_ FLOAT GetSpriteHeight(
  * @param pSprite Pointer to the Sprite whose visibility state is to be checked.
  * @return `true` if the sprite is visible, `false` if it is hidden.
  */
-_Check_return_ bool GetSpriteVisible(
+_Check_return_ bool Sprite_GetVisible(
     _In_ const Sprite* pSprite
     );
 
@@ -183,7 +183,7 @@ _Check_return_ bool GetSpriteVisible(
  * @param pSprite Pointer to the Sprite to be destroyed. After this function call, the sprite is no longer valid.
  * @return `true` if the sprite was successfully destroyed, `false` otherwise.
  */
-_Check_return_opt_ bool DestroySprite(
+_Check_return_opt_ bool Sprite_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Sprite* pSprite
     );
 

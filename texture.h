@@ -27,7 +27,7 @@ typedef struct _Texture {
  * @param pszFilename Path to the texture file to be loaded.
  * @return A pointer to the created texture, or `NULL` if the texture could not be loaded.
  */
-_Ret_maybenull_ Texture* CreateTexture(
+_Ret_maybenull_ Texture* Texture_Create(
     _In_z_ PCSTR pszFilename
     );
 
@@ -40,7 +40,7 @@ _Ret_maybenull_ Texture* CreateTexture(
  * @param pTexture Pointer to the Texture whose color will be changed.
  * @param color    The color to apply to the texture. This color will be blended with the texture.
  */
-void SetTextureColor(
+void Texture_SetColor(
     _Inout_ Texture* pTexture,
     _In_    Color color
     );
@@ -54,7 +54,7 @@ void SetTextureColor(
  * @param pTexture Pointer to the Texture to be destroyed. After the function call, the texture is no longer valid.
  * @return `true` if the texture was successfully destroyed, `false` otherwise.
  */
-_Check_return_opt_ bool DestroyTexture(
+_Check_return_opt_ bool Texture_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Texture* pTexture
     );
 

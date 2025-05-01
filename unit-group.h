@@ -16,21 +16,21 @@ typedef struct _UnitGroup {
     INT nCapacity;
 } UnitGroup;
 
-_Check_return_ UnitGroup* CreateUnitGroup(
+_Check_return_ UnitGroup* UnitGroup_Create(
     void
     );
 
-_Check_return_opt_ bool AddUnitToGroup(
+_Check_return_opt_ bool UnitGroup_AddUnit(
     _Inout_ UnitGroup* pUnitGroup,
     _In_    Unit* pUnit
     );
 
-void DrawUnitGroup(
+void UnitGroup_Draw(
     _In_ const UnitGroup* pUnitGroup,
     _In_ const Tilemap* pTilemap
     );
 
-_Check_return_opt_ bool DestroyUnitGroup(
+_Check_return_opt_ bool UnitGroup_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ UnitGroup* pUnitGroup
     );
 

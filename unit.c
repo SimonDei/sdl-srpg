@@ -36,7 +36,7 @@ void Unit_Draw(
 ) {
     const FLOAT x = (float)pUnit->ptTilePosition.x * pTilemap->fTileWidth;
     const FLOAT y = (float)pUnit->ptTilePosition.y * pTilemap->fTileHeight;
-    SetSpritePosition(pUnit->pAnimSprite->pSprite, x, y);
+    Sprite_SetPosition(pUnit->pAnimSprite->pSprite, x, y);
     
     AnimatedSprite_Draw(pUnit->pAnimSprite);
 

@@ -22,7 +22,7 @@ typedef struct _Color {
  * @param a Alpha component (transparency) of the color (0-255).
  * @return A `Color` struct initialized with the specified RGBA values.
  */
-_Check_return_ inline Color CreateColor(
+_Check_return_ inline Color Color_Create(
     _In_ BYTE r,
     _In_ BYTE g,
     _In_ BYTE b,
@@ -42,7 +42,7 @@ _Check_return_ inline Color CreateColor(
  * @param b Blue component of the color (0-255).
  * @return A `Color` struct initialized with the specified RGB values and full opacity (alpha = 255).
  */
-_Check_return_ inline Color CreateColorRGB(
+_Check_return_ inline Color Color_CreateRGB(
     _In_ BYTE r,
     _In_ BYTE g,
     _In_ BYTE b

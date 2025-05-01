@@ -23,7 +23,7 @@ AnimatedSprite* AnimatedSprite_Create(
 
     pAnimSprite->nCount = 0;
     pAnimSprite->nCapacity = 5;
-    pAnimSprite->pSprite = CreateSprite(pTexture, x, y);
+    pAnimSprite->pSprite = Sprite_Create(pTexture, x, y);
     pAnimSprite->arrAnimations = malloc(pAnimSprite->nCapacity * sizeof(Animation));
     if (!pAnimSprite->arrAnimations) {
         SDL_Log("Failed to allocate memory for animated sprite frames.\n");
@@ -50,7 +50,7 @@ RESULT AnimatedSprite_Allocate(
 
     (*ppAnimSprite)->nCount = 0;
     (*ppAnimSprite)->nCapacity = 5;
-    (*ppAnimSprite)->pSprite = CreateSprite(pTexture, x, y);
+    (*ppAnimSprite)->pSprite = Sprite_Create(pTexture, x, y);
     (*ppAnimSprite)->arrAnimations = malloc((*ppAnimSprite)->nCapacity * sizeof(Animation));
     if (!(*ppAnimSprite)->arrAnimations) {
         SDL_Log("Failed to allocate memory for animated sprite frames.\n");
@@ -285,7 +285,7 @@ void AnimatedSprite_SetScale(
     _In_ const AnimatedSprite* pAnimSprite,
     _In_ const FLOAT fScale
 ) {
-    SetSpriteScale(pAnimSprite->pSprite, fScale, fScale);
+    Sprite_SetScale(pAnimSprite->pSprite, fScale, fScale);
 }
 
 void AnimatedSprite_SetPlaying(
@@ -310,7 +310,7 @@ RESULT AnimatedSprite_Destroy(
         return RESULT_NULL_POINTER;
     }
 
-    DestroySprite(pAnimSprite->pSprite);
+    Sprite_Destroy(pAnimSprite->pSprite);
 
     for (int i = 0; i < pAnimSprite->nCount; i++) {
         SafeFree(pAnimSprite->arrAnimations[i].pszName);

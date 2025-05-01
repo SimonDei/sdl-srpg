@@ -13,7 +13,7 @@
 #include "texture.h"
 
 _Ret_maybenull_
-Sprite* CreateSprite(
+Sprite* Sprite_Create(
     _In_ Texture* pTexture,
     _In_ const FLOAT x,
     _In_ const FLOAT y
@@ -34,14 +34,14 @@ Sprite* CreateSprite(
     return pSprite;
 }
 
-void SetSpriteVisible(
+void Sprite_SetVisible(
     _Inout_ Sprite* pSprite,
     _In_    const bool bVisible
 ) {
     pSprite->bVisible = bVisible;
 }
 
-void SetSpriteScale(
+void Sprite_SetScale(
     _Inout_ Sprite* pSprite,
     _In_    const FLOAT fScaleX,
     _In_    const FLOAT fScaleY
@@ -50,21 +50,21 @@ void SetSpriteScale(
     pSprite->fScaleY = fScaleY;
 }
 
-void SetSpriteX(
+void Sprite_SetX(
     _Inout_ Sprite* pSprite,
     _In_    const FLOAT x
 ) {
     pSprite->x = x;
 }
 
-void SetSpriteY(
+void Sprite_SetY(
     _Inout_ Sprite* pSprite,
     _In_    const FLOAT y
 ) {
     pSprite->y = y;
 }
 
-void SetSpritePosition(
+void Sprite_SetPosition(
     _Inout_ Sprite* pSprite,
     _In_    const FLOAT x,
     _In_    const FLOAT y
@@ -73,14 +73,14 @@ void SetSpritePosition(
     pSprite->y = y;
 }
 
-void SetSpriteTexture(
+void Sprite_SetTexture(
     _Inout_ Sprite* pSprite,
     _In_    const Texture* pTexture
 ) {
     pSprite->pTexture = pTexture;
 }
 
-void DrawSprite(
+void Sprite_Draw(
     _In_ const Sprite* pSprite
 ) {
     if (!pSprite->bVisible) {
@@ -112,35 +112,35 @@ void DrawSprite(
 }
 
 _Check_return_
-Vector2 GetSpritePositionV(
+Vector2 Sprite_GetPositionV(
     _In_ const Sprite* pSprite
 ) {
     return (Vector2){ pSprite->x, pSprite->y };
 }
 
 _Check_return_
-FLOAT GetSpriteWidth(
+FLOAT Sprite_GetWidth(
     _In_ const Sprite* pSprite
 ) {
     return pSprite->pTexture->fWidth;
 }
 
 _Check_return_
-FLOAT GetSpriteHeight(
+FLOAT Sprite_GetHeight(
     _In_ const Sprite* pSprite
 ) {
     return pSprite->pTexture->fHeight;
 }
 
 _Check_return_
-bool GetSpriteVisible(
+bool Sprite_GetVisible(
     _In_ const Sprite* pSprite
 ) {
     return pSprite->bVisible;
 }
 
 _Check_return_opt_
-bool DestroySprite(
+bool Sprite_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Sprite* pSprite
 ) {
     if (!pSprite) {

@@ -49,7 +49,7 @@ bool TextureManager_LoadTexture(
         pManager->arrTextureEntries = arrEntries;
     }
 
-    Texture* pTexture = CreateTexture(pszFilename);
+    Texture* pTexture = Texture_Create(pszFilename);
     if (!pTexture) {
         return false;
     }
@@ -84,7 +84,7 @@ bool TextureManager_Destroy(
 
     for (int i = 0; i < pManager->nCount; i++) {
         if (pManager->arrTextureEntries[i].pTexture) {
-            DestroyTexture(pManager->arrTextureEntries[i].pTexture);
+            Texture_Destroy(pManager->arrTextureEntries[i].pTexture);
         }
     }
 

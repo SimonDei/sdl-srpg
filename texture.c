@@ -12,7 +12,7 @@
 #include "window.h"
 
 _Ret_maybenull_
-Texture* CreateTexture(
+Texture* Texture_Create(
     _In_z_ PCSTR pszFilename
 ) {
     Texture* pTexture = malloc(sizeof(Texture));
@@ -36,7 +36,7 @@ Texture* CreateTexture(
     return pTexture;
 }
 
-void SetTextureColor(
+void Texture_SetColor(
     _Inout_ Texture* pTexture,
     _In_    const Color color
 ) {
@@ -46,7 +46,7 @@ void SetTextureColor(
 }
 
 _Check_return_opt_
-bool DestroyTexture(
+bool Texture_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Texture* pTexture
 ) {
     if (!pTexture || !pTexture->pBitmap) {

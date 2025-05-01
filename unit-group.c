@@ -7,7 +7,7 @@
 #include "unit.h"
 
 _Check_return_
-UnitGroup* CreateUnitGroup(
+UnitGroup* UnitGroup_Create(
     void
 ) {
     UnitGroup* pUnitGroup = malloc(sizeof(UnitGroup));
@@ -23,7 +23,7 @@ UnitGroup* CreateUnitGroup(
 }
 
 _Check_return_opt_
-bool AddUnitToGroup(
+bool UnitGroup_AddUnit(
     _Inout_ UnitGroup* pUnitGroup,
     _In_    Unit* pUnit
 ) {
@@ -42,7 +42,7 @@ bool AddUnitToGroup(
     return true;
 }
 
-void DrawUnitGroup(
+void UnitGroup_Draw(
     _In_ const UnitGroup* pUnitGroup,
     _In_ const Tilemap* pTilemap
 ) {
@@ -52,7 +52,7 @@ void DrawUnitGroup(
 }
 
 _Check_return_opt_
-bool DestroyUnitGroup(
+bool UnitGroup_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ UnitGroup* pUnitGroup
 ) {
     if (!pUnitGroup) {
