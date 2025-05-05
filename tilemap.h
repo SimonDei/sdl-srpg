@@ -7,11 +7,14 @@
 
 #include "utils.h"
 #include "point.h"
+#include "vector2.h"
 
 typedef struct _Layer Layer;
 typedef struct _Texture Texture;
+typedef struct sfSprite sfSprite;
 
 typedef struct _Tilemap {
+    sfSprite* pSpriteHandle;
     Layer* arrLayers;
     INT nCount;
     INT nCapacity;
@@ -31,7 +34,7 @@ typedef struct _Tilemap {
  *
  * @return A pointer to the newly created `Tilemap`, or `NULL` if the creation failed.
  */
-_Check_return_ Tilemap* Tilemap_Create(
+_Check_return_ _Ret_maybenull_ Tilemap* Tilemap_Create(
     _In_ FLOAT fTileWidth,
     _In_ FLOAT fTileHeight
     );
@@ -104,6 +107,11 @@ _Check_return_ Point MapPositionToTile(
     _In_ const Tilemap* pTilemap,
     _In_ FLOAT x,
     _In_ FLOAT y
+    );
+
+_Check_return_ Point MapPositionToTileV(
+    _In_ const Tilemap* pTilemap,
+    _In_ Vector2 position
     );
 
 /**

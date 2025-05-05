@@ -7,18 +7,17 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL3/SDL.h>
 
 #include "texture.h"
 #include "utils.h"
 
-_Ret_maybenull_
+_Check_return_ _Ret_maybenull_
 TextureManager* TextureManager_Create(
     void
 ) {
     TextureManager* pManager = malloc(sizeof(TextureManager));
     if (!pManager) {
-        SDL_Log("Failed to allocate memory for TextureManager\n");
+        printf("Failed to allocate memory for TextureManager\n");
         return NULL;
     }
 
@@ -26,7 +25,7 @@ TextureManager* TextureManager_Create(
     pManager->nCapacity = 10;
     pManager->arrTextureEntries = malloc(pManager->nCapacity * sizeof(TextureEntry));
     if (!pManager->arrTextureEntries) {
-        SDL_Log("Failed to allocate memory for textures\n");
+        printf("Failed to allocate memory for textures\n");
         SafeFree(pManager);
         return NULL;
     }
@@ -35,7 +34,7 @@ TextureManager* TextureManager_Create(
 }
 
 _Check_return_opt_
-bool TextureManager_LoadTexture(
+Result TextureManager_LoadTexture(
     _In_   TextureManager* pManager,
     _In_z_ PCSTR pszName,
     _In_z_ PCSTR pszFilename
@@ -44,21 +43,21 @@ bool TextureManager_LoadTexture(
         pManager->nCapacity += 10;
         TextureEntry* arrEntries = realloc(pManager->arrTextureEntries, pManager->nCapacity * sizeof(TextureEntry));
         if (!arrEntries) {
-            return false;
+            return RESULT_REALLOC_FAILED;
         }
         pManager->arrTextureEntries = arrEntries;
     }
 
     Texture* pTexture = Texture_Create(pszFilename);
     if (!pTexture) {
-        return false;
+        return RESULT_MALLOC_FAILED;
     }
 
     pManager->arrTextureEntries[pManager->nCount].pszName = pszName;
     pManager->arrTextureEntries[pManager->nCount].pTexture = pTexture;
     pManager->nCount++;
 
-    return true;
+    return RESULT_SUCCESS;
 }
 
 _Check_return_
@@ -75,20 +74,18 @@ Texture* TextureManager_GetTexture(
 }
 
 _Check_return_opt_
-bool TextureManager_Destroy(
+Result TextureManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TextureManager* pManager
 ) {
     if (!pManager || !pManager->arrTextureEntries) {
-        return false;
+        return RESULT_NULL_POINTER;
     }
 
     for (int i = 0; i < pManager->nCount; i++) {
-        if (pManager->arrTextureEntries[i].pTexture) {
-            Texture_Destroy(pManager->arrTextureEntries[i].pTexture);
-        }
+        Texture_Destroy(pManager->arrTextureEntries[i].pTexture);
     }
 
     SafeFree(pManager->arrTextureEntries);
     SafeFree(pManager);
-    return true;
+    return RESULT_SUCCESS;
 }

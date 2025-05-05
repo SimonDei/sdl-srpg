@@ -1,7 +1,5 @@
 #include "unit.h"
 
-#include <SDL3/SDL.h>
-
 #include "window.h"
 #include "camera.h"
 #include "tilemap.h"
@@ -11,18 +9,18 @@
 _Check_return_ _Ret_maybenull_
 Unit* Unit_CreateFromAnimatedSprite(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
-    _In_ const INT iTileX,
-    _In_ const INT iTileY
+    _In_ const Tilemap* pTilemap
 ) {
     Unit* pUnit = calloc(1, sizeof(Unit));
     if (!pUnit) {
-        SDL_Log("Failed to allocate memory for Unit\n");
+        printf("Failed to allocate memory for Unit\n");
         return NULL;
     }
 
     pUnit->pAnimSprite = *ppAnimSprite;
-    pUnit->ptTilePosition.x = iTileX;
-    pUnit->ptTilePosition.y = iTileY;
+    pUnit->ptTilePosition.x = (INT)floorf(pUnit->pAnimSprite->pSprite->x / pTilemap->fTileWidth);
+    pUnit->ptTilePosition.y = (INT)floorf(pUnit->pAnimSprite->pSprite->y / pTilemap->fTileHeight);
+    pUnit->fMoveSpeed = 100.0f;
     pUnit->bAnimated = true;
 
     *ppAnimSprite = NULL;
@@ -31,17 +29,29 @@ Unit* Unit_CreateFromAnimatedSprite(
 }
 
 void Unit_Draw(
-    _In_ const Unit* pUnit,
+    _In_ Unit* pUnit,
     _In_ const Tilemap* pTilemap
 ) {
-    const FLOAT x = (float)pUnit->ptTilePosition.x * pTilemap->fTileWidth;
-    const FLOAT y = (float)pUnit->ptTilePosition.y * pTilemap->fTileHeight;
-    Sprite_SetPosition(pUnit->pAnimSprite->pSprite, x, y);
-    
     AnimatedSprite_Draw(pUnit->pAnimSprite);
 
     if (pUnit->bAnimated) {
         AnimatedSprite_Update(pUnit->pAnimSprite);
+    }
+
+    if (pUnit->bIsMoving) {
+        pUnit->fMoveElapsed += GetFrameTime();
+        FLOAT t = pUnit->fMoveElapsed / pUnit->fMoveDuration;
+
+        if (t >= 1.0f) {
+            t = 1.0f;
+            pUnit->bIsMoving = false;
+        }
+
+        Sprite_SetPosition(
+            pUnit->pAnimSprite->pSprite,
+            pUnit->vStartPos.x + (pUnit->vTargetPos.x - pUnit->vStartPos.x) * t,
+            pUnit->vStartPos.y + (pUnit->vTargetPos.y - pUnit->vStartPos.y) * t
+        );
     }
 }
 
@@ -54,7 +64,44 @@ void Unit_Move(
     pUnit->ptTilePosition.y += dy;
 }
 
-_Check_return_
+void Unit_StartMoveToTile(
+    _Inout_ Unit* pUnit,
+    _In_    const Tilemap* pTilemap,
+    _In_    Point ptTarget
+) {
+    if (!pUnit || !pTilemap) {
+        return;
+    }
+
+    pUnit->ptTilePosition = ptTarget;
+
+    Vector2 vStartPos = CreateVector2(
+        pUnit->pAnimSprite->pSprite->x,
+        pUnit->pAnimSprite->pSprite->y
+    );
+    Vector2 vTargetPos = CreateVector2(
+        (FLOAT)ptTarget.x * pTilemap->fTileWidth,
+        (FLOAT)ptTarget.y * pTilemap->fTileHeight
+    );
+
+    FLOAT dx = vTargetPos.x - vStartPos.x;
+    FLOAT dy = vTargetPos.y - vStartPos.y;
+    FLOAT distance = sqrtf(dx * dx + dy * dy);
+
+    if (distance == 0.0f) {
+        return;
+    }
+
+    FLOAT duration = distance / pUnit->fMoveSpeed;
+
+    pUnit->vStartPos = vStartPos;
+    pUnit->vTargetPos = vTargetPos;
+    pUnit->fMoveDuration = duration;
+    pUnit->fMoveElapsed = 0.0f;
+    pUnit->bIsMoving = true;
+}
+
+_Check_return_ _Ret_maybenull_
 Unit* Unit_GetAtScreenPosition(
     _In_reads_(nCount) Unit* pUnits,
     _In_               const INT nCount,

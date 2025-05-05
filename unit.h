@@ -3,13 +3,20 @@
 
 #include "point.h"
 #include "utils.h"
+#include "vector2.h"
 
 typedef struct _Tilemap Tilemap;
 typedef struct _AnimatedSprite AnimatedSprite;
 
 typedef struct _Unit {
     AnimatedSprite* pAnimSprite;
-    Point ptTilePosition;
+    Point ptTilePosition; // << Position on the map eg. (1, 1)
+    Vector2 vStartPos;    // << Moving start vector in world space eg. (16, 16)
+    Vector2 vTargetPos;   // << Moving target vector in world space eg. (48, 32)
+    FLOAT fMoveDuration;  // << Time it should take to move
+    FLOAT fMoveElapsed;   // << Time spent moving so far
+    FLOAT fMoveSpeed;     // << Speed of the unit in pixels per second
+    bool bIsMoving;       // << Is the unit currently moving?
     INT hp;
     INT attack;
     INT defense;
@@ -29,8 +36,7 @@ typedef struct _Unit {
  */
 _Check_return_ _Ret_maybenull_ Unit* Unit_CreateFromAnimatedSprite(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite** ppAnimSprite,
-    _In_ INT iTileX,
-    _In_ INT iTileY
+    _In_ const Tilemap* pTilemap
     );
 
 /**
@@ -44,7 +50,7 @@ _Check_return_ _Ret_maybenull_ Unit* Unit_CreateFromAnimatedSprite(
  * @param pTilemap Pointer to the `Tilemap` used to determine the unit's placement in the game world.
  */
 void Unit_Draw(
-    _In_ const Unit* pUnit,
+    _In_ Unit* pUnit,
     _In_ const Tilemap* pTilemap
     );
 
@@ -65,6 +71,12 @@ void Unit_Move(
     _In_    INT dy
     );
 
+void Unit_StartMoveToTile(
+    _Inout_ Unit* pUnit,
+    _In_    const Tilemap* pTilemap,
+    _In_    Point ptTarget
+    );
+
 /**
  * @brief Retrieves the unit at the specified screen position.
  *
@@ -79,7 +91,7 @@ void Unit_Move(
  * @param fMouseY  The Y coordinate of the mouse in screen space.
  * @return A pointer to the `Unit` at the specified screen position, or `NULL` if no unit is found.
  */
-_Check_return_ Unit* Unit_GetAtScreenPosition(
+_Check_return_ _Ret_maybenull_ Unit* Unit_GetAtScreenPosition(
     _In_reads_(nCount) Unit* pUnits,
     _In_               INT nCount,
     _In_               const Tilemap* pTilemap,

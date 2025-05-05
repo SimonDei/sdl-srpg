@@ -16,7 +16,7 @@ typedef struct _UnitGroup {
     INT nCapacity;
 } UnitGroup;
 
-_Check_return_ UnitGroup* UnitGroup_Create(
+_Check_return_ _Ret_maybenull_ UnitGroup* UnitGroup_Create(
     void
     );
 

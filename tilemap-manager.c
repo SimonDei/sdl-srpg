@@ -6,17 +6,16 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL3/SDL.h>
 
 #include "tilemap.h"
 
-_Check_return_
+_Check_return_ _Ret_maybenull_
 TilemapManager* TilemapManager_Create(
     void
 ) {
     TilemapManager* pManager = malloc(sizeof(TilemapManager));
     if (!pManager) {
-        SDL_Log("Failed to allocate memory for TilemapManager\n");
+        printf("Failed to allocate memory for TilemapManager\n");
         return NULL;
     }
 
@@ -24,7 +23,7 @@ TilemapManager* TilemapManager_Create(
     pManager->nCapacity = 10;
     pManager->arrTilemapEntries = malloc(pManager->nCapacity * sizeof(TilemapEntry));
     if (!pManager->arrTilemapEntries) {
-        SDL_Log("Failed to allocate memory for tilemap entries\n");
+        printf("Failed to allocate memory for tilemap entries\n");
         SafeFree(pManager);
         return NULL;
     }
@@ -32,12 +31,12 @@ TilemapManager* TilemapManager_Create(
     return pManager;
 }
 
-_Check_return_
+_Check_return_ _Ret_maybenull_
 Tilemap* TilemapManager_AddTilemap(
     _Inout_ TilemapManager* pManager,
     _In_z_  PCSTR pszName,
-    _In_    const INT iTileWidth,
-    _In_    const INT iTileHeight
+    _In_    const FLOAT fTileWidth,
+    _In_    const FLOAT fTileHeight
 ) {
     if (pManager->nCount >= pManager->nCapacity) {
         pManager->nCapacity += 10;
@@ -49,7 +48,7 @@ Tilemap* TilemapManager_AddTilemap(
     }
 
     pManager->arrTilemapEntries[pManager->nCount].pszName = pszName;
-    pManager->arrTilemapEntries[pManager->nCount].pTilemap = Tilemap_Create(iTileWidth, iTileHeight);
+    pManager->arrTilemapEntries[pManager->nCount].pTilemap = Tilemap_Create(fTileWidth, fTileHeight);
 
     pManager->nCount++;
 
@@ -57,20 +56,19 @@ Tilemap* TilemapManager_AddTilemap(
 }
 
 _Check_return_opt_
-bool TilemapManager_Destroy(
+Result TilemapManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TilemapManager* pManager
 ) {
     if (!pManager) {
-        return false;
+        return RESULT_NULL_POINTER;
     }
 
     for (int i = 0; i < pManager->nCount; i++) {
-        if (pManager->arrTilemapEntries[i].pTilemap) {
-            Tilemap_Destroy(pManager->arrTilemapEntries[i].pTilemap);
-        }
+        assert(pManager->arrTilemapEntries[i].pTilemap);
+        Tilemap_Destroy(pManager->arrTilemapEntries[i].pTilemap);
     }
 
     SafeFree(pManager->arrTilemapEntries);
     SafeFree(pManager);
-    return true;
+    return RESULT_SUCCESS;
 }

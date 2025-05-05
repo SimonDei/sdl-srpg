@@ -7,7 +7,7 @@
 #include <math.h>
 
 _Check_return_
-inline Vector2 CreateVector2(
+Vector2 CreateVector2(
     _In_ const FLOAT x,
     _In_ const FLOAT y
 ) {
@@ -15,14 +15,14 @@ inline Vector2 CreateVector2(
 }
 
 _Check_return_
-inline Vector2 Vector2Zero(
+Vector2 Vector2Zero(
     void
 ) {
     return (Vector2){ 0.0f, 0.0f };
 }
 
 _Check_return_
-inline Vector2 Vector2One(
+Vector2 Vector2One(
     void
 ) {
     return (Vector2){ 1.0f, 1.0f };

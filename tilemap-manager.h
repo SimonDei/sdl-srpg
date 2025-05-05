@@ -28,7 +28,7 @@ typedef struct _TilemapManager {
  *
  * @return A pointer to the newly created `TilemapManager`, or `NULL` if the creation failed.
  */
-_Check_return_ TilemapManager* TilemapManager_Create(
+_Check_return_ _Ret_maybenull_ TilemapManager* TilemapManager_Create(
     void
     );
 
@@ -40,16 +40,16 @@ _Check_return_ TilemapManager* TilemapManager_Create(
  *
  * @param pManager    Pointer to the `TilemapManager` to which the new tilemap will be added.
  * @param pszName     The name of the tilemap, which can be used to identify and reference the tilemap.
- * @param iTileWidth  The width (in pixels) of each tile in the tilemap.
- * @param iTileHeight The height (in pixels) of each tile in the tilemap.
+ * @param fTileWidth  The width (in pixels) of each tile in the tilemap.
+ * @param fTileHeight The height (in pixels) of each tile in the tilemap.
  *
  * @return A pointer to the newly added `Tilemap`, or `NULL` if the operation failed.
  */
-_Check_return_ Tilemap* TilemapManager_AddTilemap(
+_Check_return_ _Ret_maybenull_ Tilemap* TilemapManager_AddTilemap(
     _Inout_ TilemapManager* pManager,
     _In_z_  PCSTR pszName,
-    _In_    INT iTileWidth,
-    _In_    INT iTileHeight
+    _In_    FLOAT fTileWidth,
+    _In_    FLOAT fTileHeight
     );
 
 /**
@@ -60,11 +60,11 @@ _Check_return_ Tilemap* TilemapManager_AddTilemap(
  *
  * @param pManager Pointer to the `TilemapManager` to be destroyed. After the function call, the pointer will be invalid.
  *
- * @return `true` if the tilemap manager was successfully destroyed, or `false` if an error occurred.
+ * @return `RESULT_SUCCESS` if the destruction was successful, or an error code if the operation failed.
  *
  * @note The caller should ensure that the `TilemapManager` is no longer used after it has been destroyed.
  */
-_Check_return_opt_ bool TilemapManager_Destroy(
+_Check_return_opt_ Result TilemapManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TilemapManager* pManager
     );
 

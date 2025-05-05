@@ -6,60 +6,39 @@
 
 #include <math.h>
 #include <string.h>
+#include <SFML/Graphics.h>
 
 #include "window.h"
 
 static Camera* s_pCurrentCamera;
 
-static void RecalculateViewMatrix(
-    _Inout_ Camera* pCamera
-) {
-    const float cos_r = cosf(pCamera->fRotation);
-    const float sin_r = sinf(pCamera->fRotation);
-
-    const float sx = pCamera->fZoom;
-    const float sy = pCamera->fZoom;
-
-    const float tx = -pCamera->x;
-    const float ty = -pCamera->y;
-
-    const float cx = (float)Window_GetWidth() / 2.0f;
-    const float cy = (float)Window_GetHeight() / 2.0f;
-
-    pCamera->pfViewMatrix[0][0] = cos_r * sx;
-    pCamera->pfViewMatrix[0][1] = -sin_r * sy;
-    pCamera->pfViewMatrix[0][2] = 0;
-
-    pCamera->pfViewMatrix[1][0] = sin_r * sx;
-    pCamera->pfViewMatrix[1][1] = cos_r * sy;
-    pCamera->pfViewMatrix[1][2] = 0;
-
-    pCamera->pfViewMatrix[2][0] = cos_r * sx * tx + -sin_r * sy * ty + cx;
-    pCamera->pfViewMatrix[2][1] = sin_r * sx * tx + cos_r * sy * ty + cy;
-    pCamera->pfViewMatrix[2][2] = 1;
-}
-
-_Check_return_
-Camera Camera_Create(
+_Check_return_ _Ret_maybenull_
+Camera* Camera_Create(
     _In_ const FLOAT x,
     _In_ const FLOAT y,
     _In_ const FLOAT fWidth,
     _In_ const FLOAT fHeight,
-    _In_ const FLOAT fRotation,
-    _In_ const FLOAT fZoom
+    _In_ const FLOAT fRotation
 ) {
-    Camera camera = { 0 };
+    Camera* pCamera = malloc(sizeof(Camera));
+    if (!pCamera) {
+        printf("Failed to allocate memory for Camera\n");
+        return NULL;
+    }
 
-    camera.x = x;
-    camera.y = y;
-    camera.fWidth = fWidth;
-    camera.fHeight = fHeight;
-    camera.fRotation = fRotation;
-    camera.fZoom = fZoom;
+    pCamera->x = x;
+    pCamera->y = y;
+    pCamera->fWidth = fWidth;
+    pCamera->fHeight = fHeight;
+    pCamera->fRotation = fRotation;
+    pCamera->fZoom = 1.0f;
+    pCamera->pView = sfView_create();
 
-    RecalculateViewMatrix(&camera);
+    sfView_setCenter(pCamera->pView, (sfVector2f) { x, y });
+    sfView_setRotation(pCamera->pView, fRotation);
+    sfView_setSize(pCamera->pView, (sfVector2f) { fWidth, fHeight });
 
-    return camera;
+    return pCamera;
 }
 
 void Camera_SetZoom(
@@ -67,7 +46,7 @@ void Camera_SetZoom(
     _In_    const FLOAT fZoom
 ) {
     pCamera->fZoom = fZoom;
-    RecalculateViewMatrix(pCamera);
+
 }
 
 void Camera_SetRotation(
@@ -75,7 +54,8 @@ void Camera_SetRotation(
     _In_    const FLOAT fRotation
 ) {
     pCamera->fRotation = fRotation;
-    RecalculateViewMatrix(pCamera);
+    sfView_setRotation(pCamera->pView, fRotation);
+    sfRenderWindow_setView(Window_GetRenderWindow(), pCamera->pView);
 }
 
 void Camera_SetPosition(
@@ -85,7 +65,8 @@ void Camera_SetPosition(
 ) {
     pCamera->x = x;
     pCamera->y = y;
-    RecalculateViewMatrix(pCamera);
+    sfView_setCenter(pCamera->pView, (sfVector2f) { x, y });
+    sfRenderWindow_setView(Window_GetRenderWindow(), pCamera->pView);
 }
 
 void Camera_SetPositionV(
@@ -94,7 +75,8 @@ void Camera_SetPositionV(
 ) {
     pCamera->x = target.x;
     pCamera->y = target.y;
-    RecalculateViewMatrix(pCamera);
+    sfView_setCenter(pCamera->pView, (sfVector2f) { target.x, target.y });
+    sfRenderWindow_setView(Window_GetRenderWindow(), pCamera->pView);
 }
 
 void Camera_MovePosition(
@@ -110,13 +92,15 @@ void Camera_MovePosition(
 
     pCamera->x += dx;
     pCamera->y += dy;
-    RecalculateViewMatrix(pCamera);
+    sfView_move(pCamera->pView, (sfVector2f) { dx, dy });
+    sfRenderWindow_setView(Window_GetRenderWindow(), pCamera->pView);
 }
 
 void Camera_Use(
     _In_ Camera* pCamera
 ) {
     s_pCurrentCamera = pCamera;
+    sfRenderWindow_setView(Window_GetRenderWindow(), pCamera->pView);
 }
 
 _Check_return_
@@ -124,63 +108,53 @@ Vector2 WorldToScreen(
     _In_ const FLOAT x,
     _In_ const FLOAT y
 ) {
-    Vector2 screen = { 0 };
+    sfVector2i screen = sfRenderWindow_mapCoordsToPixel(
+        Window_GetRenderWindow(),
+        (sfVector2f) { x, y },
+        s_pCurrentCamera->pView
+    );
 
-    screen.x = x * s_pCurrentCamera->pfViewMatrix[0][0] + y * s_pCurrentCamera->pfViewMatrix[1][0] + s_pCurrentCamera->pfViewMatrix[2][0];
-    screen.y = x * s_pCurrentCamera->pfViewMatrix[0][1] + y * s_pCurrentCamera->pfViewMatrix[1][1] + s_pCurrentCamera->pfViewMatrix[2][1];
-
-    return screen;
+    return (Vector2) { screen.x, screen.y };
 }
 
 _Check_return_
 Vector2 WorldToScreenV(
     _In_ const Vector2 world
 ) {
-    Vector2 screen = { 0 };
-    
-    screen.x = world.x * s_pCurrentCamera->pfViewMatrix[0][0] + world.y * s_pCurrentCamera->pfViewMatrix[1][0] + s_pCurrentCamera->pfViewMatrix[2][0];
-    screen.y = world.x * s_pCurrentCamera->pfViewMatrix[0][1] + world.y * s_pCurrentCamera->pfViewMatrix[1][1] + s_pCurrentCamera->pfViewMatrix[2][1];
+    sfVector2i screen = sfRenderWindow_mapCoordsToPixel(
+        Window_GetRenderWindow(),
+        (sfVector2f) { world.x, world.y },
+        s_pCurrentCamera->pView
+    );
 
-    return screen;
+    return (Vector2) { screen.x, screen.y };
 }
 
 _Check_return_
 Vector2 ScreenToWorld(
-    _In_ FLOAT x,
-    _In_ FLOAT y
+    _In_ INT x,
+    _In_ INT y
 ) {
-    Vector2 world = { 0 };
+    sfVector2f world = sfRenderWindow_mapPixelToCoords(
+        Window_GetRenderWindow(),
+        (sfVector2i) { x, y },
+        s_pCurrentCamera->pView
+    );
 
-    x -= s_pCurrentCamera->pfViewMatrix[2][0];
-    y -= s_pCurrentCamera->pfViewMatrix[2][1];
-
-    const float cos_r = cosf(-s_pCurrentCamera->fRotation);
-    const float sin_r = sinf(-s_pCurrentCamera->fRotation);
-    const float invZoom = 1.0f / s_pCurrentCamera->fZoom;
-
-    world.x = (x * cos_r - y * sin_r) * invZoom;
-    world.y = (x * sin_r + y * cos_r) * invZoom;
-
-    return world;
+    return (Vector2) { world.x, world.y };
 }
 
 _Check_return_
 Vector2 ScreenToWorldV(
-    _In_ Vector2 screen
+    _In_ Point screen
 ) {
-    Vector2 world = { 0 };
+    sfVector2f world = sfRenderWindow_mapPixelToCoords(
+        Window_GetRenderWindow(),
+        (sfVector2i) { screen.x, screen.y },
+        s_pCurrentCamera->pView
+    );
 
-    screen.x -= s_pCurrentCamera->pfViewMatrix[2][0];
-    screen.y -= s_pCurrentCamera->pfViewMatrix[2][1];
-
-    const float cos_r = cosf(-s_pCurrentCamera->fRotation);
-    const float sin_r = sinf(-s_pCurrentCamera->fRotation);
-    const float invZoom = 1.0f / s_pCurrentCamera->fZoom;
-
-    world.x = (screen.x * cos_r - screen.y * sin_r) * invZoom;
-    world.y = (screen.x * sin_r + screen.y * cos_r) * invZoom;
-
-    return world;
+    return (Vector2) { world.x, world.y };
 }
 
 _Check_return_
@@ -209,4 +183,19 @@ const Camera* Camera_GetCurrent(
     void
 ) {
     return s_pCurrentCamera;
+}
+
+_Check_return_opt_
+bool Camera_Destroy(
+    _Inout_ _Pre_valid_ _Post_invalid_ Camera* pCamera
+) {
+    if (pCamera == NULL) {
+        return false;
+    }
+
+    sfView_destroy(pCamera->pView);
+
+    SafeFree(pCamera);
+
+    return true;
 }

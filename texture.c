@@ -6,32 +6,34 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL3/SDL.h>
-#include <SDL3_image/SDL_image.h>
+#include <SFML/Graphics.h>
 
 #include "window.h"
 
-_Ret_maybenull_
+_Check_return_ _Ret_maybenull_
 Texture* Texture_Create(
     _In_z_ PCSTR pszFilename
 ) {
     Texture* pTexture = malloc(sizeof(Texture));
     if (!pTexture) {
-        SDL_Log("Failed to allocate memory for texture\n");
+        printf("Failed to allocate memory for texture\n");
         return NULL;
     }
 
-    pTexture->color = (Color){ 255, 255, 255, 255 };
+    pTexture->color = (Color) { 255, 255, 255, 255 };
     pTexture->pszFilename = pszFilename;
-    pTexture->pBitmap = IMG_LoadTexture(Window_GetRenderer(), pszFilename);
+    pTexture->pBitmap = sfTexture_createFromFile(pszFilename, NULL);
     if (!pTexture->pBitmap) {
-        SDL_Log("Failed to load texture from %s\n", pszFilename);
+        printf("Failed to load texture from %s\n", pszFilename);
         SafeFree(pTexture);
         return NULL;
     }
 
-    SDL_SetTextureScaleMode(pTexture->pBitmap, SDL_SCALEMODE_NEAREST);
-    SDL_GetTextureSize(pTexture->pBitmap, &pTexture->fWidth, &pTexture->fHeight);
+    const sfVector2u vTextureSize = sfTexture_getSize(pTexture->pBitmap);
+    pTexture->fWidth = (FLOAT)vTextureSize.x;
+    pTexture->fHeight = (FLOAT)vTextureSize.y;
+
+    // SDL_SetTextureScaleMode(pTexture->pBitmap, SDL_SCALEMODE_NEAREST);
 
     return pTexture;
 }
@@ -41,19 +43,19 @@ void Texture_SetColor(
     _In_    const Color color
 ) {
     pTexture->color = color;
-    SDL_SetTextureColorMod(pTexture->pBitmap, color.r, color.g, color.b);
-    SDL_SetTextureAlphaMod(pTexture->pBitmap, color.a);
+    // SDL_SetTextureColorMod(pTexture->pBitmap, color.r, color.g, color.b);
+    // SDL_SetTextureAlphaMod(pTexture->pBitmap, color.a);
 }
 
 _Check_return_opt_
 bool Texture_Destroy(
-    _Inout_ _Pre_valid_ _Post_invalid_ Texture* pTexture
+    _Inout_ _Post_invalid_ Texture* pTexture
 ) {
     if (!pTexture || !pTexture->pBitmap) {
         return false;
     }
 
-    SDL_DestroyTexture(pTexture->pBitmap);
+    sfTexture_destroy(pTexture->pBitmap);
     SafeFree(pTexture);
     return true;
 }

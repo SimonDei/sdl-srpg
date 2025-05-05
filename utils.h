@@ -25,13 +25,18 @@ typedef uint64_t UINT64, ULONG;
 typedef float FLOAT, FLOAT32;
 typedef double DOUBLE, FLOAT64;
 
-typedef enum _RESULT {
+typedef enum _Result {
     RESULT_SUCCESS,
     RESULT_FAILED,
     RESULT_NULL_POINTER,
     RESULT_MALLOC_FAILED,
     RESULT_REALLOC_FAILED
-} RESULT;
+} Result;
+
+#define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
+
+#define Succeeded(result) ((result) == RESULT_SUCCESS)
+#define Failed(result) ((result) != RESULT_SUCCESS)
 
 /**
  * @brief Suppresses compiler warnings for unused function parameters.

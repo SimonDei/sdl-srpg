@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <SDL3/SDL.h>
+#include <SFML/Graphics.h>
 
 #include "window.h"
 #include "camera.h"
@@ -23,7 +23,7 @@ static Layer LoadLayer(
 
     FILE* pFile = fopen(pszFilename, "r");
     if (!pFile) {
-        SDL_Log("Failed to open layer file: %s\n", pszFilename);
+        printf("Failed to open layer file: %s\n", pszFilename);
         return (Layer){ 0 };
     }
 
@@ -36,7 +36,7 @@ static Layer LoadLayer(
 
     layer.arrTiles = malloc((size_t)(layer.usWidth * layer.usHeight) * sizeof(BYTE));
     if (!layer.arrTiles) {
-        SDL_Log("Failed to allocate memory for layer tiles\n");
+        printf("Failed to allocate memory for layer tiles\n");
         fclose(pFile);
         return (Layer){ 0 };
     }
@@ -58,17 +58,18 @@ static Layer LoadLayer(
     return layer;
 }
 
-_Check_return_
+_Check_return_ _Ret_maybenull_
 Tilemap* Tilemap_Create(
     _In_ const FLOAT fTileWidth,
     _In_ const FLOAT fTileHeight
 ) {
     Tilemap* pTilemap = malloc(sizeof(Tilemap));
     if (!pTilemap) {
-        SDL_Log("Failed to allocate memory for Tilemap\n");
+        printf("Failed to allocate memory for Tilemap\n");
         return NULL;
     }
 
+    pTilemap->pSpriteHandle = sfSprite_create();
     pTilemap->fTileWidth = fTileWidth;
     pTilemap->fTileHeight = fTileHeight;
     pTilemap->nCount = 0;
@@ -91,6 +92,11 @@ void Tilemap_SetTexture(
     _In_    const Texture* pTexture
 ) {
     pTilemap->pTilesetTexture = pTexture;
+    sfSprite_setTexture(
+        pTilemap->pSpriteHandle,
+        pTexture->pBitmap,
+        true
+    );
 }
 
 void Tilemap_Draw(
@@ -101,31 +107,25 @@ void Tilemap_Draw(
             const int iTileX = pTilemap->arrLayers[nLayer].arrTiles[nTile] % (int)(pTilemap->pTilesetTexture->fWidth / pTilemap->fTileWidth);
             const int iTileY = pTilemap->arrLayers[nLayer].arrTiles[nTile] / (int)(pTilemap->pTilesetTexture->fWidth / pTilemap->fTileWidth);
 
-            const SDL_FRect srcRect = {
-                (float)iTileX * pTilemap->fTileWidth,
-                (float)iTileY * pTilemap->fTileHeight,
-                pTilemap->fTileWidth,
-                pTilemap->fTileHeight
-            };
-
-            const Vector2 screenPos = WorldToScreen(
-                (float)(nTile % pTilemap->arrLayers[nLayer].usWidth) * pTilemap->fTileWidth,
-                floorf((float)nTile / (float)pTilemap->arrLayers[nLayer].usWidth) * pTilemap->fTileHeight
+            sfSprite_setTextureRect(
+                pTilemap->pSpriteHandle,
+                (sfIntRect) {
+                    iTileX * (int)pTilemap->fTileWidth,
+                    iTileY * (int)pTilemap->fTileHeight,
+                    (int)pTilemap->fTileWidth,
+                    (int)pTilemap->fTileHeight
+                }
             );
 
-            const SDL_FRect dstRect = {
-                screenPos.x,
-                screenPos.y,
-                pTilemap->fTileWidth * Camera_GetZoom(),
-                pTilemap->fTileHeight * Camera_GetZoom()
-            };
-
-            SDL_RenderTexture(
-                Window_GetRenderer(),
-                pTilemap->pTilesetTexture->pBitmap,
-                &srcRect,
-                &dstRect
+            sfSprite_setPosition(
+                pTilemap->pSpriteHandle,
+                (sfVector2f) {
+                    nTile % pTilemap->arrLayers[nLayer].usWidth * pTilemap->fTileWidth,
+                    nTile / pTilemap->arrLayers[nLayer].usWidth * pTilemap->fTileHeight
+                }
             );
+
+            sfRenderWindow_drawSprite(Window_GetRenderWindow(), pTilemap->pSpriteHandle, NULL);
         }
     }
 }
@@ -142,6 +142,17 @@ Point MapPositionToTile(
     };
 }
 
+_Check_return_
+Point MapPositionToTileV(
+    _In_ const Tilemap* pTilemap,
+    _In_ const Vector2 position
+) {
+    return (Point) {
+        (int)floorf(position.x / pTilemap->fTileWidth),
+        (int)floorf(position.y / pTilemap->fTileHeight)
+    };
+}
+
 _Check_return_opt_
 bool Tilemap_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Tilemap* pTilemap
@@ -149,6 +160,8 @@ bool Tilemap_Destroy(
     if (!pTilemap) {
         return false;
     }
+
+    sfSprite_destroy(pTilemap->pSpriteHandle);
 
     for (int i = 0; i < pTilemap->nCount; i++) {
         SafeFree(pTilemap->arrLayers[i].arrTiles);

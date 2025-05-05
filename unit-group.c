@@ -6,7 +6,7 @@
 
 #include "unit.h"
 
-_Check_return_
+_Check_return_ _Ret_maybenull_
 UnitGroup* UnitGroup_Create(
     void
 ) {

@@ -1,15 +1,17 @@
 #include "animated-sprite.h"
 
 #include <string.h>
-#include <SDL3/SDL.h>
+#include <SFML/Graphics.h>
 
 #include "window.h"
 #include "camera.h"
 #include "sprite.h"
 #include "texture.h"
+#include "file.h"
+#include "convert.h"
 #include "xml.h"
 
-_Ret_maybenull_
+_Check_return_ _Ret_maybenull_
 AnimatedSprite* AnimatedSprite_Create(
     _In_ Texture* pTexture,
     _In_ const FLOAT x,
@@ -17,7 +19,7 @@ AnimatedSprite* AnimatedSprite_Create(
 ) {
     AnimatedSprite* pAnimSprite = malloc(sizeof(AnimatedSprite));
     if (!pAnimSprite) {
-        SDL_Log("Failed to allocate memory for animated sprite.\n");
+        printf("Failed to allocate memory for animated sprite.\n");
         return NULL;
     }
 
@@ -26,7 +28,7 @@ AnimatedSprite* AnimatedSprite_Create(
     pAnimSprite->pSprite = Sprite_Create(pTexture, x, y);
     pAnimSprite->arrAnimations = malloc(pAnimSprite->nCapacity * sizeof(Animation));
     if (!pAnimSprite->arrAnimations) {
-        SDL_Log("Failed to allocate memory for animated sprite frames.\n");
+        printf("Failed to allocate memory for animated sprite frames.\n");
         SafeFree(pAnimSprite);
         return NULL;
     }
@@ -36,7 +38,7 @@ AnimatedSprite* AnimatedSprite_Create(
 
 _Check_return_opt_
 _Success_(return == 0)
-RESULT AnimatedSprite_Allocate(
+Result AnimatedSprite_Allocate(
     _In_                          Texture* pTexture,
     _In_                          const FLOAT x,
     _In_                          const FLOAT y,
@@ -44,7 +46,7 @@ RESULT AnimatedSprite_Allocate(
 ) {
     *ppAnimSprite = malloc(sizeof(AnimatedSprite));
     if (!*ppAnimSprite) {
-        SDL_Log("Failed to allocate memory for animated sprite.\n");
+        printf("Failed to allocate memory for animated sprite.\n");
         return RESULT_MALLOC_FAILED;
     }
 
@@ -53,7 +55,7 @@ RESULT AnimatedSprite_Allocate(
     (*ppAnimSprite)->pSprite = Sprite_Create(pTexture, x, y);
     (*ppAnimSprite)->arrAnimations = malloc((*ppAnimSprite)->nCapacity * sizeof(Animation));
     if (!(*ppAnimSprite)->arrAnimations) {
-        SDL_Log("Failed to allocate memory for animated sprite frames.\n");
+        printf("Failed to allocate memory for animated sprite frames.\n");
         SafeFree(*ppAnimSprite);
         return RESULT_MALLOC_FAILED;
     }
@@ -61,7 +63,7 @@ RESULT AnimatedSprite_Allocate(
     return RESULT_SUCCESS;
 }
 
-RESULT AnimatedSprite_AddAnimation(
+Result AnimatedSprite_AddAnimation(
     _Inout_ AnimatedSprite* pAnimSprite,
     _In_z_  PCSTR pszName,
     _In_    const FLOAT fFrameSizeX,
@@ -101,8 +103,7 @@ static void ParseXmlNodeContentFloat(
     _In_  const INT iNode
 ) {
     BYTE* pNodeContent = xml_easy_content(xml_node_child(pXmlNode, iNode));
-    PSTR pszNodeContent = NULL;
-    *pfValue = strtof((PCSTR)pNodeContent, &pszNodeContent);
+    *pfValue = StrToFloat((PCSTR)pNodeContent);
     SafeFree(pNodeContent);
 }
 
@@ -112,8 +113,7 @@ static void ParseXmlNodeContentInt(
     _In_  const INT iNode
 ) {
     BYTE* pNodeContent = xml_easy_content(xml_node_child(pXmlNode, iNode));
-    PSTR pszNodeContent = NULL;
-    *pnValue = (INT)strtol((PCSTR)pNodeContent, &pszNodeContent, 10);
+    *pnValue = StrToInt((PCSTR)pNodeContent);
     SafeFree(pNodeContent);
 }
 
@@ -123,8 +123,7 @@ static void ParseXmlNodeContentUlong(
     _In_  const INT iNode
 ) {
     BYTE* pNodeContent = xml_easy_content(xml_node_child(pXmlNode, iNode));
-    PSTR pszNodeContent = NULL;
-    *pu64Value = strtoull((PCSTR)pNodeContent, &pszNodeContent, 10);
+    *pu64Value = StrToUlong((PCSTR)pNodeContent);
     SafeFree(pNodeContent);
 }
 
@@ -132,29 +131,24 @@ void AnimatedSprite_LoadAnimationsFromFile(
     _Inout_ AnimatedSprite* pAnimSprite,
     _In_z_  PCSTR pszFileName
 ) {
-    FILE* pFile;
-    if (fopen_s(&pFile, pszFileName, "r") != 0) {
-        SDL_Log("Failed to open file: %s\n", pszFileName);
+    File* pAnimationFile = File_Open(pszFileName);
+    if (!pAnimationFile) {
+        printf("Failed to open file: %s\n", pszFileName);
         return;
     }
 
-    fseek(pFile, 0, SEEK_END);
-    const long fileSize = ftell(pFile);
-    fseek(pFile, 0, SEEK_SET);
-    PSTR pszBuffer = malloc(fileSize + 1);
+    PSTR pszBuffer = File_ReadAllBytes(pAnimationFile, NULL);
     if (!pszBuffer) {
-        SDL_Log("Failed to allocate memory for file buffer.\n");
-        fclose(pFile);
+        printf("Failed to read file: %s\n", pszFileName);
+        File_Close(pAnimationFile);
         return;
     }
 
-    fread(pszBuffer, 1, fileSize, pFile);
-    pszBuffer[fileSize] = '\0';
-    fclose(pFile);
+    File_Close(pAnimationFile);
 
     struct xml_document* pXmlDocument = xml_parse_document((uint8_t*)pszBuffer, strlen(pszBuffer));
     if (!pXmlDocument) {
-        SDL_Log("Failed to parse file: %s\n", pszFileName);
+        printf("Failed to parse file: %s\n", pszFileName);
         SafeFree(pszBuffer);
         return;
     }
@@ -166,7 +160,7 @@ void AnimatedSprite_LoadAnimationsFromFile(
         pAnimSprite->nCapacity = (int)nAnimations + 1;
         Animation* arrAnimations = realloc(pAnimSprite->arrAnimations, pAnimSprite->nCapacity * sizeof(Animation));
         if (!arrAnimations) {
-            SDL_Log("Failed to allocate memory for animated sprite frames.\n");
+            printf("Failed to allocate memory for animated sprite frames.\n");
             xml_document_free(pXmlDocument, false);
             SafeFree(pszBuffer);
             return;
@@ -179,7 +173,7 @@ void AnimatedSprite_LoadAnimationsFromFile(
 
         Animation* pAnimation = &pAnimSprite->arrAnimations[i];
 
-        pAnimation->pszName = (PCSTR)xml_easy_content(xml_node_child(pXmlAnimationNode, 0));
+        pAnimation->pszName = (PSTR)xml_easy_content(xml_node_child(pXmlAnimationNode, 0));
 
         ParseXmlNodeContentFloat(&pAnimation->fFrameSizeX, pXmlAnimationNode, 1);
         ParseXmlNodeContentFloat(&pAnimation->fFrameSizeY, pXmlAnimationNode, 2);
@@ -213,16 +207,10 @@ void AnimatedSprite_SetActiveAnimation(
 void AnimatedSprite_Draw(
     _In_ const AnimatedSprite* pAnimSprite
 ) {
-    const int iSourceX = pAnimSprite->pActiveAnimation->iCurrentFrame % (int)(pAnimSprite->pSprite->pTexture->fWidth / pAnimSprite->pActiveAnimation->fFrameSizeX);
-    const int iSourceY = pAnimSprite->pActiveAnimation->iCurrentFrame / (int)(pAnimSprite->pSprite->pTexture->fWidth / pAnimSprite->pActiveAnimation->fFrameSizeX);
+    const int iSourceX = pAnimSprite->pActiveAnimation->iCurrentFrame % (int)(Sprite_GetWidth(pAnimSprite->pSprite) / pAnimSprite->pActiveAnimation->fFrameSizeX);
+    const int iSourceY = pAnimSprite->pActiveAnimation->iCurrentFrame / (int)(Sprite_GetWidth(pAnimSprite->pSprite) / pAnimSprite->pActiveAnimation->fFrameSizeX);
 
-    const SDL_FRect srcRect = {
-        (float)iSourceX * pAnimSprite->pActiveAnimation->fFrameSizeX,
-        (float)iSourceY * pAnimSprite->pActiveAnimation->fFrameSizeY,
-        pAnimSprite->pActiveAnimation->fFrameSizeX,
-        pAnimSprite->pActiveAnimation->fFrameSizeY
-    };
-
+    /*
     const Vector2 screenPos = WorldToScreen(pAnimSprite->pSprite->x, pAnimSprite->pSprite->y);
 
     const SDL_FRect dstRect = {
@@ -231,13 +219,19 @@ void AnimatedSprite_Draw(
         pAnimSprite->pActiveAnimation->fFrameSizeX * pAnimSprite->pSprite->fScaleX * Camera_GetZoom(),
         pAnimSprite->pActiveAnimation->fFrameSizeY * pAnimSprite->pSprite->fScaleY * Camera_GetZoom()
     };
-    
-    SDL_RenderTexture(
-        Window_GetRenderer(),
-        pAnimSprite->pSprite->pTexture->pBitmap,
-        &srcRect,
-        &dstRect
+    */
+
+    sfSprite_setTextureRect(
+        pAnimSprite->pSprite->pSpriteHandle,
+        (sfIntRect) {
+            iSourceX * (int)pAnimSprite->pActiveAnimation->fFrameSizeX,
+            iSourceY * (int)pAnimSprite->pActiveAnimation->fFrameSizeY,
+            (int)pAnimSprite->pActiveAnimation->fFrameSizeX,
+            (int)pAnimSprite->pActiveAnimation->fFrameSizeY
+        }
     );
+    
+    Sprite_Draw(pAnimSprite->pSprite);
 }
 
 void AnimatedSprite_Update(
@@ -247,9 +241,9 @@ void AnimatedSprite_Update(
         return;
     }
 
-    const UINT64 u64Time = SDL_GetTicks();
-    if (u64Time - pAnimSprite->pActiveAnimation->u64LastTime >= pAnimSprite->pActiveAnimation->u64FrameTime) {
-        pAnimSprite->pActiveAnimation->u64LastTime = u64Time;
+    const INT nTime = GetTime();
+    if (nTime - pAnimSprite->pActiveAnimation->u64LastTime >= pAnimSprite->pActiveAnimation->u64FrameTime) {
+        pAnimSprite->pActiveAnimation->u64LastTime = nTime;
         pAnimSprite->pActiveAnimation->iCurrentFrame++;
         if (pAnimSprite->pActiveAnimation->iCurrentFrame >= pAnimSprite->pActiveAnimation->nFrameCount + pAnimSprite->pActiveAnimation->iStartFrame) {
             pAnimSprite->pActiveAnimation->iCurrentFrame = pAnimSprite->pActiveAnimation->iStartFrame;
@@ -303,7 +297,7 @@ PCSTR AnimatedSprite_GetCurrentName(
 }
 
 _Check_return_opt_
-RESULT AnimatedSprite_Destroy(
+Result AnimatedSprite_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite* pAnimSprite
 ) {
     if (!pAnimSprite) {

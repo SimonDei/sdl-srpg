@@ -2,10 +2,10 @@ cmake_minimum_required(VERSION 3.20)
 
 project(untitled C)
 
-set(CMAKE_C_STANDARD 17)
+set(CMAKE_C_STANDARD 23)
 
-include_directories("C:\\Users\\Simon\\Downloads\\SDL3-3.2.10\\include" "C:\\Users\\Simon\\Downloads\\SDL3_image-3.2.4\\include")
-link_directories("C:\\Users\\Simon\\Downloads\\SDL3-3.2.10\\lib\\x64" "C:\\Users\\Simon\\Downloads\\SDL3_image-3.2.4\\lib\\x64")
+include_directories("C:\\Users\\Simon\\Downloads\\CSFML\\include")
+link_directories("C:\\Users\\Simon\\Downloads\\CSFML\\lib\\msvc")
 
 add_executable(untitled main.c
         window.c
@@ -31,6 +31,6 @@ add_executable(untitled main.c
         unit-group.c
         unit-group.h
         xml.c
-        xml.h)
+        xml.h "file.h" "file.c" "convert.h")
 
-target_link_libraries(untitled PRIVATE SDL3 SDL3_image)
+target_link_libraries(untitled PRIVATE csfml-window csfml-graphics csfml-system)

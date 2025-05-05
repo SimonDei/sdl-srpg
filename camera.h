@@ -6,7 +6,10 @@
 #define CAMERA_H
 
 #include "utils.h"
+#include "point.h"
 #include "vector2.h"
+
+typedef struct sfView sfView;
 
 typedef struct _Camera {
     FLOAT x;
@@ -15,7 +18,7 @@ typedef struct _Camera {
     FLOAT fHeight;
     FLOAT fRotation;
     FLOAT fZoom;
-    FLOAT pfViewMatrix[3][3];
+    sfView* pView;
 } Camera;
 
 /**
@@ -32,13 +35,12 @@ typedef struct _Camera {
  * @param fZoom    Zoom factor for the camera (1.0 for no zoom, greater than 1.0 for zoom-in, less than 1.0 for zoom-out).
  * @return A `Camera` struct initialized with the provided properties.
  */
-_Check_return_ Camera Camera_Create(
+_Check_return_ _Ret_maybenull_ Camera* Camera_Create(
     _In_ FLOAT x,
     _In_ FLOAT y,
     _In_ FLOAT fWidth,
     _In_ FLOAT fHeight,
-    _In_ FLOAT fRotation,
-    _In_ FLOAT fZoom
+    _In_ FLOAT fRotation
     );
 
 /**
@@ -173,8 +175,8 @@ _Check_return_ Vector2 WorldToScreenV(
  * @return A `Vector2` struct containing the corresponding X and Y coordinates in world space.
  */
 _Check_return_ Vector2 ScreenToWorld(
-    _In_ FLOAT x,
-    _In_ FLOAT y
+    _In_ INT x,
+    _In_ INT y
     );
 
 /**
@@ -188,7 +190,7 @@ _Check_return_ Vector2 ScreenToWorld(
  * @return A `Vector2` struct containing the corresponding X and Y coordinates in world space.
  */
 _Check_return_ Vector2 ScreenToWorldV(
-    _In_ Vector2 screen
+    _In_ Point screen
     );
 
 /**
@@ -237,6 +239,10 @@ _Check_return_ FLOAT Camera_GetY(
  */
 _Check_return_ const Camera* Camera_GetCurrent(
     void
+    );
+
+_Check_return_opt_ bool Camera_Destroy(
+    _Inout_ _Pre_valid_ _Post_invalid_ Camera* pCamera
     );
 
 #endif //CAMERA_H

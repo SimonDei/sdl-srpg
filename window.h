@@ -7,13 +7,10 @@
 
 #include "utils.h"
 
-typedef struct SDL_Window SDL_Window;
-typedef struct SDL_Renderer SDL_Renderer;
+typedef struct sfRenderWindow sfRenderWindow;
 
 typedef struct _Window {
-    SDL_Window* pDisplay;
-    SDL_Renderer* pRenderer;
-    bool bRunning;
+    sfRenderWindow* pDisplay;
     UINT uWidth;
     UINT uHeight;
     PCSTR pszTitle;
@@ -37,7 +34,7 @@ typedef struct _Window {
  * @note If the window creation fails, `NULL` will be returned. The caller should handle any potential errors
  *       (e.g., by checking the returned value before using the window).
  */
-_Ret_maybenull_ Window* Window_Create(
+_Check_return_ _Ret_maybenull_ Window* Window_Create(
     _In_   INT x,
     _In_   INT y,
     _In_   UINT uWidth,
@@ -59,6 +56,10 @@ _Check_return_ bool Window_IsOpen(
     _In_ Window* pWindow
     );
 
+_Check_return_ INT GetTime(
+    void
+    );
+
 /**
  * @brief Retrieves the time duration of the last frame.
  *
@@ -70,7 +71,7 @@ _Check_return_ bool Window_IsOpen(
  * @note The frame time is typically updated each time the application renders a frame, and the returned value
  *       may vary depending on the system's performance and rendering loop timing.
  */
-_Check_return_ FLOAT GetFrameTime(
+_Check_return_ INT64 GetFrameTime(
     void
     );
 
@@ -193,6 +194,10 @@ _Check_return_ INT Window_GetHeight(
     void
     );
 
+_Check_return_ sfRenderWindow* Window_GetRenderWindow(
+    void
+    );
+
 /**
  * @brief Retrieves the current X-coordinate of the mouse cursor.
  *
@@ -205,7 +210,7 @@ _Check_return_ INT Window_GetHeight(
  * @note This value updates dynamically as the mouse moves. It is commonly used during the game loop or in
  *       response to input events to track user interaction.
  */
-_Check_return_ FLOAT GetMouseX(
+_Check_return_ INT GetMouseX(
     void
     );
 
@@ -221,24 +226,7 @@ _Check_return_ FLOAT GetMouseX(
  * @note The returned value may change dynamically as the mouse is moved. This function is typically called in
  *       response to input events or during the game loop to track the mouse position.
  */
-_Check_return_ FLOAT GetMouseY(
-    void
-    );
-
-/**
- * @brief Retrieves the renderer associated with the current window.
- *
- * This function returns the `SDL_Renderer` used for rendering content in the current window. The renderer is
- * responsible for drawing textures, shapes, and other graphical elements to the window. This function is typically
- * used to obtain a reference to the renderer so that it can be used for rendering operations in the game loop.
- *
- * @return A pointer to the `SDL_Renderer` associated with the current window. If the renderer is unavailable,
- *         the function will return `NULL`.
- *
- * @note The returned renderer should be used in conjunction with SDL rendering functions. The caller should not
- *       modify or destroy the renderer directly unless appropriate cleanup is performed.
- */
-_Check_return_ SDL_Renderer* Window_GetRenderer(
+_Check_return_ INT GetMouseY(
     void
     );
 

@@ -30,7 +30,7 @@ typedef struct _Vector2 {
  *
  * @returns A Vector2 initialized with the specified coordinates.
  */
-_Check_return_ inline Vector2 CreateVector2(
+_Check_return_ Vector2 CreateVector2(
     _In_ FLOAT x,
     _In_ FLOAT y
     );
@@ -40,7 +40,7 @@ _Check_return_ inline Vector2 CreateVector2(
  *
  * @returns A zero-initialized Vector2 representing the origin (0, 0).
  */
-_Check_return_ inline Vector2 Vector2Zero(
+_Check_return_ Vector2 Vector2Zero(
     void
     );
 
@@ -49,7 +49,7 @@ _Check_return_ inline Vector2 Vector2Zero(
  *
  * @returns A Vector2 with values (1.0f, 1.0f), often used for uniform scaling or default values.
  */
-_Check_return_ inline Vector2 Vector2One(
+_Check_return_ Vector2 Vector2One(
     void
     );
 

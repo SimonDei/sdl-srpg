@@ -5,29 +5,19 @@
 #include "window.h"
 
 #include <stdio.h>
-#include <SDL3/SDL.h>
+#include <SFML/Graphics.h>
 
-static bool bInitialized = false;
 static INT s_iWindowWidth;
 static INT s_iWindowHeight;
-static SDL_Window* s_pWindow;
-static SDL_Renderer* s_pRenderer;
-static SDL_Event lastEvent;
-static const bool* s_pKeyboardState;
-static SDL_MouseButtonFlags s_mouseState;
+static sfRenderWindow* s_pWindow;
+static sfEvent lastEvent;
 static FLOAT s_fMouseX;
 static FLOAT s_fMouseY;
-static UINT64 u64LastTime = 0;
-static UINT64 u64CurrentTime = 0;
-static UINT64 u64DeltaTime = 0;
+static sfTime s_deltaTime;
+static sfClock* s_pDeltaClock;
+static sfClock* s_pClock;
 
-static void InitializeSDL(
-    void
-) {
-    SDL_Init(SDL_INIT_VIDEO);
-}
-
-_Ret_maybenull_
+_Check_return_ _Ret_maybenull_
 Window* Window_Create(
     _In_   const INT x,
     _In_   const INT y,
@@ -37,7 +27,7 @@ Window* Window_Create(
 ) {
     Window* pWindow = malloc(sizeof(Window));
     if (!pWindow) {
-        SDL_Log("Failed to allocate memory for window\n");
+        printf("Failed to allocate memory for window\n");
         return NULL;
     }
 
@@ -45,41 +35,44 @@ Window* Window_Create(
     pWindow->uWidth = uWidth;
     pWindow->uHeight = uHeight;
 
-    if (!bInitialized) {
-        InitializeSDL();
-        bInitialized = true;
-    }
-
     if (uWidth > INT32_MAX || uHeight > INT32_MAX) {
-        SDL_Log("Width or height exceeds maximum value\n");
+        printf("Width or height exceeds maximum value\n");
         SafeFree(pWindow);
         return NULL;
     }
 
-    pWindow->pDisplay = SDL_CreateWindow(pszTitle, (int)uWidth, (int)uHeight, SDL_WINDOW_HIDDEN);
+    pWindow->pDisplay = sfRenderWindow_create((sfVideoMode) { uWidth, uHeight, 32 }, pszTitle, sfResize | sfClose, NULL);
     if (!pWindow->pDisplay) {
-        SDL_Log("Failed to create display\n");
+        printf("Failed to create display\n");
         SafeFree(pWindow);
         return NULL;
     }
 
-    SDL_SetWindowPosition(pWindow->pDisplay, x, y);
-    SDL_ShowWindow(pWindow->pDisplay);
-
-    pWindow->pRenderer = SDL_CreateRenderer(pWindow->pDisplay, NULL);
-    if (!pWindow->pRenderer) {
-        SDL_DestroyWindow(pWindow->pDisplay);
-        SDL_Log("Failed to create renderer\n");
-        SafeFree(pWindow);
-        return NULL;
-    }
+    sfRenderWindow_setPosition(pWindow->pDisplay, (sfVector2i) { x, y });
 
     s_pWindow = pWindow->pDisplay;
-    s_pRenderer = pWindow->pRenderer;
     s_iWindowWidth = (int)uWidth;
     s_iWindowHeight = (int)uHeight;
-    pWindow->bRunning = true;
-    u64LastTime = SDL_GetTicks();
+    
+    s_pDeltaClock = sfClock_create();
+    if (!s_pDeltaClock) {
+        printf("Failed to create delta clock\n");
+        sfRenderWindow_destroy(pWindow->pDisplay);
+        SafeFree(pWindow);
+        return NULL;
+    }
+
+    s_pClock = sfClock_create();
+    if (!s_pClock) {
+        printf("Failed to create clock\n");
+        sfClock_destroy(s_pDeltaClock);
+        sfRenderWindow_destroy(pWindow->pDisplay);
+        SafeFree(pWindow);
+        return NULL;
+    }
+
+    sfClock_restart(s_pClock);
+    sfClock_restart(s_pDeltaClock);
 
     return pWindow;
 }
@@ -88,56 +81,59 @@ _Check_return_
 bool Window_IsOpen(
     _In_ Window* pWindow
 ) {
-    while (SDL_PollEvent(&lastEvent)) {
+    while (sfRenderWindow_pollEvent(s_pWindow, &lastEvent)) {
         switch (lastEvent.type) {
-            case SDL_EVENT_QUIT:
-                pWindow->bRunning = false;
+            case sfEvtClosed:
+                sfRenderWindow_close(pWindow->pDisplay);
                 break;
         }
     }
-    s_pKeyboardState = SDL_GetKeyboardState(NULL);
-    s_mouseState = SDL_GetMouseState(&s_fMouseX, &s_fMouseY);
 
-    u64CurrentTime = SDL_GetTicks();
-    u64DeltaTime = u64CurrentTime - u64LastTime;
-    u64LastTime = u64CurrentTime;
+    s_deltaTime = sfClock_restart(s_pDeltaClock);
 
-    return pWindow->bRunning;
+    return sfRenderWindow_isOpen(pWindow->pDisplay);
 }
 
 _Check_return_
-FLOAT GetFrameTime(
+INT GetTime(
     void
 ) {
-    return (float)u64DeltaTime / 1000.0f;
+    return sfTime_asMilliseconds(sfClock_getElapsedTime(s_pClock));
+}
+
+_Check_return_
+INT64 GetFrameTime(
+    void
+) {
+    return sfTime_asMicroseconds(s_deltaTime);
 }
 
 _Check_return_
 bool IsKeyDown(
     _In_ const INT iKey
 ) {
-    return s_pKeyboardState[iKey];
+    return sfKeyboard_isKeyPressed(iKey);
 }
 
 _Check_return_
 bool IsKeyUp(
     _In_ const INT iKey
 ) {
-    return !s_pKeyboardState[iKey];
+    return !sfKeyboard_isKeyPressed(iKey);
 }
 
 _Check_return_
 bool LeftMousePressed(
     void
 ) {
-    return s_mouseState & SDL_BUTTON_LMASK;
+    return sfMouse_isButtonPressed(sfMouseLeft);
 }
 
 _Check_return_
 bool RightMousePressed(
     void
 ) {
-    return s_mouseState & SDL_BUTTON_RMASK;
+    return sfMouse_isButtonPressed(sfMouseRight);
 }
 
 void Window_Clear(
@@ -145,14 +141,13 @@ void Window_Clear(
     _In_ const BYTE byGreen,
     _In_ const BYTE byBlue
 ) {
-    SDL_SetRenderDrawColor(s_pRenderer, byRed, byGreen, byBlue, 255);
-    SDL_RenderClear(s_pRenderer);
+    sfRenderWindow_clear(s_pWindow, (sfColor) { 0, 0, 0, 255 });
 }
 
 void Window_Display(
     void
 ) {
-    SDL_RenderPresent(s_pRenderer);
+    sfRenderWindow_display(s_pWindow);
 }
 
 _Check_return_
@@ -170,24 +165,24 @@ INT Window_GetHeight(
 }
 
 _Check_return_
-FLOAT GetMouseX(
+sfRenderWindow* Window_GetRenderWindow(
     void
 ) {
-    return s_fMouseX;
+    return s_pWindow;
 }
 
 _Check_return_
-FLOAT GetMouseY(
+INT GetMouseX(
     void
 ) {
-    return s_fMouseY;
+    return sfMouse_getPositionRenderWindow(s_pWindow).x;
 }
 
 _Check_return_
-SDL_Renderer* Window_GetRenderer(
+INT GetMouseY(
     void
 ) {
-    return s_pRenderer;
+    return sfMouse_getPositionRenderWindow(s_pWindow).y;
 }
 
 _Check_return_opt_
@@ -198,10 +193,10 @@ bool Window_Destroy(
         return false;
     }
 
-    SDL_DestroyRenderer(pWindow->pRenderer);
-    SDL_DestroyWindow(pWindow->pDisplay);
+    sfRenderWindow_destroy(pWindow->pDisplay);
+    sfClock_destroy(s_pClock);
+    sfClock_destroy(s_pDeltaClock);
     SafeFree(pWindow);
 
-    SDL_Quit();
     return true;
 }

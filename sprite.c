@@ -6,13 +6,13 @@
 
 #include <stdio.h>
 #include <stdlib.h>
-#include <SDL3/SDL.h>
+#include <SFML/Graphics.h>
 
 #include "window.h"
 #include "camera.h"
 #include "texture.h"
 
-_Ret_maybenull_
+_Check_return_ _Ret_maybenull_
 Sprite* Sprite_Create(
     _In_ Texture* pTexture,
     _In_ const FLOAT x,
@@ -20,11 +20,20 @@ Sprite* Sprite_Create(
 ) {
     Sprite* pSprite = malloc(sizeof(Sprite));
     if (!pSprite) {
-        SDL_Log("Failed to allocate memory for Sprite\n");
+        printf("Failed to allocate memory for Sprite\n");
         return NULL;
     }
 
-    pSprite->pTexture = pTexture;
+    pSprite->pSpriteHandle = sfSprite_create();
+    if (!pSprite->pSpriteHandle) {
+        printf("Failed to create sprite handle\n");
+        SafeFree(pSprite);
+        return NULL;
+    }
+
+    sfSprite_setTexture(pSprite->pSpriteHandle, pTexture->pBitmap, true);
+    sfSprite_setPosition(pSprite->pSpriteHandle, (sfVector2f) { x, y });
+
     pSprite->x = x;
     pSprite->y = y;
     pSprite->fScaleX = 1.0f;
@@ -48,6 +57,7 @@ void Sprite_SetScale(
 ) {
     pSprite->fScaleX = fScaleX;
     pSprite->fScaleY = fScaleY;
+    sfSprite_setScale(pSprite->pSpriteHandle, (sfVector2f) { fScaleX, fScaleY });
 }
 
 void Sprite_SetX(
@@ -55,6 +65,7 @@ void Sprite_SetX(
     _In_    const FLOAT x
 ) {
     pSprite->x = x;
+    sfSprite_setPosition(pSprite->pSpriteHandle, (sfVector2f) { x, pSprite->y });
 }
 
 void Sprite_SetY(
@@ -62,6 +73,7 @@ void Sprite_SetY(
     _In_    const FLOAT y
 ) {
     pSprite->y = y;
+    sfSprite_setPosition(pSprite->pSpriteHandle, (sfVector2f) { pSprite->x, y });
 }
 
 void Sprite_SetPosition(
@@ -71,13 +83,14 @@ void Sprite_SetPosition(
 ) {
     pSprite->x = x;
     pSprite->y = y;
+    sfSprite_setPosition(pSprite->pSpriteHandle, (sfVector2f) { x, y });
 }
 
 void Sprite_SetTexture(
     _Inout_ Sprite* pSprite,
     _In_    const Texture* pTexture
 ) {
-    pSprite->pTexture = pTexture;
+    sfSprite_setTexture(pSprite->pSpriteHandle, pTexture->pBitmap, true);
 }
 
 void Sprite_Draw(
@@ -87,49 +100,28 @@ void Sprite_Draw(
         return;
     }
 
-    const SDL_FRect srcRect = {
-        0,
-        0,
-        pSprite->pTexture->fWidth,
-        pSprite->pTexture->fHeight
-    };
-
-    const Vector2 screenPos = WorldToScreen(pSprite->x, pSprite->y);
-
-    const SDL_FRect dstRect = {
-        screenPos.x,
-        screenPos.y,
-        pSprite->pTexture->fWidth * pSprite->fScaleX * Camera_GetZoom(),
-        pSprite->pTexture->fHeight * pSprite->fScaleY * Camera_GetZoom()
-    };
-
-    SDL_RenderTexture(
-        Window_GetRenderer(),
-        pSprite->pTexture->pBitmap,
-        &srcRect,
-        &dstRect
-    );
+    sfRenderWindow_drawSprite(Window_GetRenderWindow(), pSprite->pSpriteHandle, NULL);
 }
 
 _Check_return_
 Vector2 Sprite_GetPositionV(
     _In_ const Sprite* pSprite
 ) {
-    return (Vector2){ pSprite->x, pSprite->y };
+    return (Vector2) { pSprite->x, pSprite->y };
 }
 
 _Check_return_
 FLOAT Sprite_GetWidth(
     _In_ const Sprite* pSprite
 ) {
-    return pSprite->pTexture->fWidth;
+    return sfTexture_getSize(sfSprite_getTexture(pSprite->pSpriteHandle)).x;
 }
 
 _Check_return_
 FLOAT Sprite_GetHeight(
     _In_ const Sprite* pSprite
 ) {
-    return pSprite->pTexture->fHeight;
+    return sfTexture_getSize(sfSprite_getTexture(pSprite->pSpriteHandle)).y;
 }
 
 _Check_return_
@@ -147,6 +139,7 @@ bool Sprite_Destroy(
         return false;
     }
 
+    sfSprite_destroy(pSprite->pSpriteHandle);
     SafeFree(pSprite);
     return true;
 }

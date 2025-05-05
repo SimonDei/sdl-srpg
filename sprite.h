@@ -9,9 +9,10 @@
 #include "vector2.h"
 
 typedef struct _Texture Texture;
+typedef struct sfSprite sfSprite;
 
 typedef struct _Sprite {
-    Texture* pTexture;
+    sfSprite* pSpriteHandle;
     FLOAT x;
     FLOAT y;
     FLOAT fScaleX;
@@ -30,7 +31,7 @@ typedef struct _Sprite {
  * @param y        Y coordinate for the initial position of the sprite.
  * @return A pointer to the newly created sprite, or `NULL` if the creation failed.
  */
-_Ret_maybenull_ Sprite* Sprite_Create(
+_Check_return_ _Ret_maybenull_ Sprite* Sprite_Create(
     _In_ Texture* pTexture,
     _In_ FLOAT x,
     _In_ FLOAT y

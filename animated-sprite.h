@@ -7,7 +7,7 @@ typedef struct _Sprite Sprite;
 typedef struct _Texture Texture;
 
 typedef struct _Animation {
-    PCSTR pszName;
+    PSTR pszName;
     INT iStartFrame;
     INT iCurrentFrame;
     INT nFrameCount;
@@ -37,7 +37,7 @@ typedef struct _AnimatedSprite {
  * @param y        The Y coordinate in world space for the initial position of the animated sprite.
  * @return A pointer to an `AnimatedSprite` object, or `NULL` if the sprite could not be created.
  */
-_Ret_maybenull_ AnimatedSprite* AnimatedSprite_Create(
+_Check_return_ _Ret_maybenull_ AnimatedSprite* AnimatedSprite_Create(
     _In_ Texture* pTexture,
     _In_ FLOAT x,
     _In_ FLOAT y
@@ -59,7 +59,7 @@ _Ret_maybenull_ AnimatedSprite* AnimatedSprite_Create(
  *
  * @note The caller is responsible for freeing the allocated memory when it is no longer needed.
  */
-_Check_return_opt_ _Success_(return == 0) RESULT
+_Check_return_opt_ _Success_(return == 0) Result
 AnimatedSprite_Allocate(
     _In_                          Texture* pTexture,
     _In_                          FLOAT x,
@@ -84,7 +84,7 @@ AnimatedSprite_Allocate(
  * @return `RESULT` indicating the success or failure of the operation.
  *         A successful result should return `0`, while non-zero values indicate failure.
  */
-RESULT AnimatedSprite_AddAnimation(
+Result AnimatedSprite_AddAnimation(
     _Inout_ AnimatedSprite* pAnimSprite,
     _In_z_  PCSTR pszName,
     _In_    FLOAT fFrameSizeX,
@@ -219,7 +219,7 @@ _Check_return_ PCSTR AnimatedSprite_GetCurrentName(
  *
  * @note The caller is responsible for ensuring that the sprite is no longer used after being destroyed.
  */
-_Check_return_opt_ RESULT AnimatedSprite_Destroy(
+_Check_return_opt_ Result AnimatedSprite_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ AnimatedSprite* pAnimSprite
     );
 

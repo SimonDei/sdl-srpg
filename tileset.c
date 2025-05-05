@@ -4,7 +4,7 @@
 
 #include "tileset.h"
 
-#include <SDL3/SDL.h>
+#include <SFML/Graphics.h>
 
 #include "window.h"
 #include "camera.h"
@@ -32,6 +32,7 @@ void DrawTile(
     _In_ const FLOAT x,
     _In_ const FLOAT y
 ) {
+    /*
     const SDL_FRect srcRect = {
         (float)iTileX * pTileset->fTileWidth,
         (float)iTileY * pTileset->fTileHeight,
@@ -47,13 +48,8 @@ void DrawTile(
         pTileset->fTileWidth * Camera_GetZoom(),
         pTileset->fTileHeight * Camera_GetZoom()
     };
+    */
 
-    SDL_RenderTexture(
-        Window_GetRenderer(),
-        pTileset->pTexture->pBitmap,
-        &srcRect,
-        &dstRect
-    );
 }
 
 void DrawTileIndex(

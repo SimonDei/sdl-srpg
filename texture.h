@@ -8,10 +8,10 @@
 #include "utils.h"
 #include "color.h"
 
-typedef struct SDL_Texture SDL_Texture;
+typedef struct sfTexture sfTexture;
 
 typedef struct _Texture {
-    SDL_Texture* pBitmap;
+    sfTexture* pBitmap;
     FLOAT fWidth;
     FLOAT fHeight;
     PCSTR pszFilename;
@@ -27,7 +27,7 @@ typedef struct _Texture {
  * @param pszFilename Path to the texture file to be loaded.
  * @return A pointer to the created texture, or `NULL` if the texture could not be loaded.
  */
-_Ret_maybenull_ Texture* Texture_Create(
+_Check_return_ _Ret_maybenull_ Texture* Texture_Create(
     _In_z_ PCSTR pszFilename
     );
 
@@ -55,7 +55,7 @@ void Texture_SetColor(
  * @return `true` if the texture was successfully destroyed, `false` otherwise.
  */
 _Check_return_opt_ bool Texture_Destroy(
-    _Inout_ _Pre_valid_ _Post_invalid_ Texture* pTexture
+    _Inout_ _Post_invalid_ Texture* pTexture
     );
 
 #endif //TEXTURE_H

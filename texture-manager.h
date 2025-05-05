@@ -7,6 +7,8 @@
 
 #include "utils.h"
 
+#include <d3d9.h>
+
 typedef struct _Texture Texture;
 
 typedef struct _TextureEntry {
@@ -28,7 +30,7 @@ typedef struct _TextureManager {
  *
  * @return A pointer to the newly created `TextureManager` object, or `NULL` if the creation failed.
  */
-_Ret_maybenull_ TextureManager* TextureManager_Create(
+_Check_return_ _Ret_maybenull_ TextureManager* TextureManager_Create(
     void
     );
 
@@ -41,9 +43,10 @@ _Ret_maybenull_ TextureManager* TextureManager_Create(
  * @param pManager Pointer to the `TextureManager` where the texture will be loaded.
  * @param pszName  The name to associate with the loaded texture.
  * @param pszFilename Path to the texture file to be loaded.
- * @return `true` if the texture was successfully loaded, `false` otherwise (e.g., if the file could not be loaded).
+ * 
+ * @return `RESULT_SUCCESS` if the texture was successfully loaded and added, or an error code if the operation failed.
  */
-_Check_return_opt_ bool TextureManager_LoadTexture(
+_Check_return_opt_ Result TextureManager_LoadTexture(
     _In_   TextureManager* pManager,
     _In_z_ PCSTR pszName,
     _In_z_ PCSTR pszFilename
@@ -72,9 +75,10 @@ _Check_return_ Texture* TextureManager_GetTexture(
  * pointer should not be used.
  *
  * @param pManager Pointer to the `TextureManager` to be destroyed. After the function call, the manager is no longer valid.
- * @return `true` if the texture manager was successfully destroyed and all resources freed, `false` otherwise.
+ * 
+ * @return `RESULT_SUCCESS` if the destruction was successful, or an error code if the operation failed.
  */
-_Check_return_opt_ bool TextureManager_Destroy(
+_Check_return_opt_ Result TextureManager_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ TextureManager* pManager
     );
 
