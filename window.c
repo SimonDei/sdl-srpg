@@ -79,7 +79,7 @@ Window* Window_Create(
 
 _Check_return_
 bool Window_IsOpen(
-    _In_ Window* pWindow
+    _In_ const Window* pWindow
 ) {
     while (sfRenderWindow_pollEvent(s_pWindow, &lastEvent)) {
         switch (lastEvent.type) {
@@ -105,7 +105,7 @@ _Check_return_
 INT64 GetFrameTime(
     void
 ) {
-    return sfTime_asMicroseconds(s_deltaTime);
+    return sfTime_asMilliseconds(s_deltaTime);
 }
 
 _Check_return_

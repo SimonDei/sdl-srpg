@@ -32,7 +32,7 @@ typedef struct _Sprite {
  * @return A pointer to the newly created sprite, or `NULL` if the creation failed.
  */
 _Check_return_ _Ret_maybenull_ Sprite* Sprite_Create(
-    _In_ Texture* pTexture,
+    _In_ const Texture* pTexture,
     _In_ FLOAT x,
     _In_ FLOAT y
     );
@@ -133,7 +133,7 @@ void Sprite_Draw(
  * @param pSprite Pointer to the Sprite whose position is to be retrieved.
  * @return A `Vector2` struct containing the X and Y position of the sprite.
  */
-_Check_return_ Vector2 Sprite_GetPositionV(
+_Check_return_ VECTOR2 Sprite_GetPositionV(
     _In_ const Sprite* pSprite
     );
 

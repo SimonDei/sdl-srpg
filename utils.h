@@ -33,10 +33,10 @@ typedef enum _Result {
     RESULT_REALLOC_FAILED
 } Result;
 
-#define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
-
 #define Succeeded(result) ((result) == RESULT_SUCCESS)
 #define Failed(result) ((result) != RESULT_SUCCESS)
+
+#define ArraySize(arr) (sizeof(arr) / sizeof((arr)[0]))
 
 /**
  * @brief Suppresses compiler warnings for unused function parameters.

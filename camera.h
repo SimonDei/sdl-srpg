@@ -100,7 +100,7 @@ void Camera_SetPosition(
  */
 void Camera_SetPositionV(
     _Inout_ Camera* pCamera,
-    _In_    Vector2 target
+    _In_    VECTOR2 target
     );
 
 /**
@@ -130,7 +130,7 @@ void Camera_MovePosition(
  * @param pCamera Pointer to the `Camera` to be used for rendering.
  */
 void Camera_Use(
-    _In_ Camera* pCamera
+    _In_opt_ Camera* pCamera
     );
 
 /**
@@ -144,7 +144,7 @@ void Camera_Use(
  * @param y The Y coordinate in world space.
  * @return A `Vector2` struct containing the corresponding X and Y coordinates in screen space.
  */
-_Check_return_ Vector2 WorldToScreen(
+_Check_return_ VECTOR2 WorldToScreen(
     _In_ FLOAT x,
     _In_ FLOAT y
     );
@@ -159,8 +159,8 @@ _Check_return_ Vector2 WorldToScreen(
  * @param world A `Vector2` struct representing the X and Y coordinates in world space.
  * @return A `Vector2` struct containing the corresponding X and Y coordinates in screen space.
  */
-_Check_return_ Vector2 WorldToScreenV(
-    _In_ Vector2 world
+_Check_return_ VECTOR2 WorldToScreenV(
+    _In_ VECTOR2 world
     );
 
 /**
@@ -174,7 +174,7 @@ _Check_return_ Vector2 WorldToScreenV(
  * @param y The Y coordinate in screen space.
  * @return A `Vector2` struct containing the corresponding X and Y coordinates in world space.
  */
-_Check_return_ Vector2 ScreenToWorld(
+_Check_return_ VECTOR2 ScreenToWorld(
     _In_ INT x,
     _In_ INT y
     );
@@ -189,8 +189,8 @@ _Check_return_ Vector2 ScreenToWorld(
  * @param screen A `Vector2` struct representing the X and Y coordinates in screen space.
  * @return A `Vector2` struct containing the corresponding X and Y coordinates in world space.
  */
-_Check_return_ Vector2 ScreenToWorldV(
-    _In_ Point screen
+_Check_return_ VECTOR2 ScreenToWorldV(
+    _In_ POINT screen
     );
 
 /**

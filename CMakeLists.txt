@@ -1,8 +1,8 @@
-cmake_minimum_required(VERSION 3.20)
+cmake_minimum_required(VERSION 3.25)
 
 project(untitled C)
 
-set(CMAKE_C_STANDARD 23)
+set(CMAKE_C_STANDARD 17)
 
 include_directories("C:\\Users\\Simon\\Downloads\\CSFML\\include")
 link_directories("C:\\Users\\Simon\\Downloads\\CSFML\\lib\\msvc")
@@ -31,6 +31,8 @@ add_executable(untitled main.c
         unit-group.c
         unit-group.h
         xml.c
-        xml.h "file.h" "file.c" "convert.h")
+        xml.h "file.h" "file.c" "convert.h" "gui.h" "gui.c"
+        gui-image.c
+        gui-image.h)
 
 target_link_libraries(untitled PRIVATE csfml-window csfml-graphics csfml-system)

@@ -103,15 +103,15 @@ void Tilemap_Draw(
  * @return A `Point` structure containing the tile's row (`x`) and column (`y`) corresponding to the given world
  *         position.
  */
-_Check_return_ Point MapPositionToTile(
+_Check_return_ POINT MapPositionToTile(
     _In_ const Tilemap* pTilemap,
     _In_ FLOAT x,
     _In_ FLOAT y
     );
 
-_Check_return_ Point MapPositionToTileV(
+_Check_return_ POINT MapPositionToTileV(
     _In_ const Tilemap* pTilemap,
-    _In_ Vector2 position
+    _In_ VECTOR2 position
     );
 
 /**

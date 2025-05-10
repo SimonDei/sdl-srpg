@@ -7,8 +7,6 @@
 
 #include "utils.h"
 
-#include <d3d9.h>
-
 typedef struct _Texture Texture;
 
 typedef struct _TextureEntry {

@@ -53,7 +53,7 @@ _Check_return_ _Ret_maybenull_ Window* Window_Create(
  * @return `true` if the window is still open, or `false` if the window has been closed.
  */
 _Check_return_ bool Window_IsOpen(
-    _In_ Window* pWindow
+    _In_ const Window* pWindow
     );
 
 _Check_return_ INT GetTime(

@@ -14,7 +14,7 @@
 
 _Check_return_ _Ret_maybenull_
 Sprite* Sprite_Create(
-    _In_ Texture* pTexture,
+    _In_ const Texture* pTexture,
     _In_ const FLOAT x,
     _In_ const FLOAT y
 ) {
@@ -104,10 +104,10 @@ void Sprite_Draw(
 }
 
 _Check_return_
-Vector2 Sprite_GetPositionV(
+VECTOR2 Sprite_GetPositionV(
     _In_ const Sprite* pSprite
 ) {
-    return (Vector2) { pSprite->x, pSprite->y };
+    return (VECTOR2) { pSprite->x, pSprite->y };
 }
 
 _Check_return_

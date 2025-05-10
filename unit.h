@@ -10,17 +10,17 @@ typedef struct _AnimatedSprite AnimatedSprite;
 
 typedef struct _Unit {
     AnimatedSprite* pAnimSprite;
-    Point ptTilePosition; // << Position on the map eg. (1, 1)
-    Vector2 vStartPos;    // << Moving start vector in world space eg. (16, 16)
-    Vector2 vTargetPos;   // << Moving target vector in world space eg. (48, 32)
+    POINT ptTilePosition; // << Position on the map eg. (1, 1)
+    VECTOR2 vStart;       // << Moving start vector in world space eg. (16, 16)
+    VECTOR2 vTarget;      // << Moving target vector in world space eg. (48, 32)
     FLOAT fMoveDuration;  // << Time it should take to move
     FLOAT fMoveElapsed;   // << Time spent moving so far
     FLOAT fMoveSpeed;     // << Speed of the unit in pixels per second
     bool bIsMoving;       // << Is the unit currently moving?
-    INT hp;
-    INT attack;
-    INT defense;
-    INT moveSpeed;
+    INT nHp;
+    INT nAttack;
+    INT nDefense;
+    INT nMoveSpeed;
     bool bAnimated;
 } Unit;
 
@@ -29,8 +29,7 @@ typedef struct _Unit {
  * Takes ownership of the animated sprite pointer.
  * 
  * @param ppAnimSprite Pointer to the animated sprite to use for the unit.
- * @param iTileX The x-coordinate of the tile position.
- * @param iTileY The y-coordinate of the tile position.
+ * @param pTilemap Pointer to the tilemap used for positioning the unit.
  * 
  * @return A pointer to the created unit, or NULL on failure.
  */
@@ -50,8 +49,8 @@ _Check_return_ _Ret_maybenull_ Unit* Unit_CreateFromAnimatedSprite(
  * @param pTilemap Pointer to the `Tilemap` used to determine the unit's placement in the game world.
  */
 void Unit_Draw(
-    _In_ Unit* pUnit,
-    _In_ const Tilemap* pTilemap
+    _Inout_ Unit* pUnit,
+    _In_    const Tilemap* pTilemap
     );
 
 /**
@@ -74,7 +73,7 @@ void Unit_Move(
 void Unit_StartMoveToTile(
     _Inout_ Unit* pUnit,
     _In_    const Tilemap* pTilemap,
-    _In_    Point ptTarget
+    _In_    POINT ptTarget
     );
 
 /**
@@ -112,4 +111,4 @@ _Check_return_opt_ bool Unit_Destroy(
     _Inout_ _Pre_valid_ _Post_invalid_ Unit* pUnit
     );
 
-#endif // UNIT_H
+#endif //UNIT_H

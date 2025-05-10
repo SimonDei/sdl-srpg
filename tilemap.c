@@ -131,23 +131,23 @@ void Tilemap_Draw(
 }
 
 _Check_return_
-Point MapPositionToTile(
+POINT MapPositionToTile(
     _In_ const Tilemap* pTilemap,
     _In_ const FLOAT x,
     _In_ const FLOAT y
 ) {
-    return (Point) {
+    return (POINT) {
         (int)floorf(x / pTilemap->fTileWidth),
         (int)floorf(y / pTilemap->fTileHeight)
     };
 }
 
 _Check_return_
-Point MapPositionToTileV(
+POINT MapPositionToTileV(
     _In_ const Tilemap* pTilemap,
-    _In_ const Vector2 position
+    _In_ const VECTOR2 position
 ) {
-    return (Point) {
+    return (POINT) {
         (int)floorf(position.x / pTilemap->fTileWidth),
         (int)floorf(position.y / pTilemap->fTileHeight)
     };
